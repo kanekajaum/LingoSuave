@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LingoSuave - Aprenda Idiomas no Seu Ritmo</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Google Fonts: Lexend (alta legibilidade para dislexia) e Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- CDN para fonte OpenDyslexic -->
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/open-dyslexic" />
+
+  <style>
+    /* Variáveis dinâmicas de acessibilidade */
+    :root {
+      --app-font: 'Lexend', sans-serif;
+      --app-bg: #FAF6EE;       /* Creme suave clássico para leitura */
+      --app-card: #FFFFFF;
+      --app-text: #23272F;
+      --app-accent: #2A7B62;   /* Verde calmo e focado */
+      --app-letter-spacing: 0.05em;
+      --app-word-spacing: 0.16em;
+      --app-line-height: 1.8;
+    }
+
+    body {
+      font-family: var(--app-font);
+      background-color: var(--app-bg);
+      color: var(--app-text);
+      letter-spacing: var(--app-letter-spacing);
+      word-spacing: var(--app-word-spacing);
+      line-height: var(--app-line-height);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .font-dyslexic {
+      font-family: 'OpenDyslexic', 'Lexend', sans-serif !important;
+    }
+
+    .font-lexend {
+      font-family: 'Lexend', sans-serif !important;
+    }
+
+    /* Cores de fundo pré-configuradas para reduzir esforço visual */
+    .theme-cream { --app-bg: #FAF6EE; --app-card: #FFFFFF; --app-text: #23272F; }
+    .theme-mint { --app-bg: #EFF7F2; --app-card: #FFFFFF; --app-text: #1C3326; }
+    .theme-sky { --app-bg: #F0F4F8; --app-card: #FFFFFF; --app-text: #192A3E; }
+    .theme-peach { --app-bg: #FFF5EE; --app-card: #FFFFFF; --app-text: #34221C; }
+    .theme-dark { --app-bg: #1A1F26; --app-card: #242B35; --app-text: #F1F4F9; }
+
+    /* Efeitos de destaque amigáveis (sem estresse) */
+    .chunk-card {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+    .chunk-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Pílulas de sílabas com alto contraste visual */
+    .syllable-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      margin: 2px;
+      border-radius: 9999px;
+      font-weight: 600;
+      background-color: #E8F2EC;
+      color: #1B5E3F;
+      border: 1px solid #C4E2D0;
+    }
+
+    /* Régua de leitura visual para dislexia */
+    #readingRuler {
+      position: fixed;
+      left: 0;
+      width: 100vw;
+      height: 48px;
+      background-color: rgba(254, 240, 138, 0.28);
+      border-top: 2px solid rgba(234, 179, 8, 0.6);
+      border-bottom: 2px solid rgba(234, 179, 8, 0.6);
+      pointer-events: none;
+      z-index: 999;
+      display: none;
+      transition: top 0.08s ease-out;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Pulsação do microfone */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .mic-recording {
+      animation: pulse-ring 1.5s infinite;
+      background-color: #DC2626 !important;
+      color: white !important;
+    }
+
+    /* Rotação e animação suave */
+    @keyframes gentle-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .animate-gentle {
+      animation: gentle-bounce 3s infinite ease-in-out;
+    }
+
+    /* Barra de rolagem personalizada */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.03);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+    }
+
+    /* Otimizações Mobile & Toque Ergonômico */
+    button, select, input, a {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    @media (max-width: 640px) {
+      .tab-btn {
+        min-height: 44px;
+      }
+      .chunk-card {
+        padding: 1.1rem !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-950 pb-safe">
+  
+  <!-- Régua de Leitura Virtual -->
+  <div id="readingRuler"></div>
+
+  <!-- Cabeçalho Principal -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-black/5 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      
+      <!-- Marca & Data do Dia -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-emerald-700 text-white flex items-center justify-center text-xl shadow-md shadow-emerald-700/20">
+          <i class="fa-solid fa-feather-pointed"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg sm:text-xl font-black text-stone-900 tracking-tight">LingoSuave</h1>
+            <span id="headerDateBadge" class="hidden md:inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 text-stone-600 border border-stone-200">
+              Hoje
+            </span>
+          </div>
+          <p class="text-xs text-stone-500 hidden sm:block">Aprenda sem pressa, com som e blocos de sentido</p>
+        </div>
+      </div>
+
+      <!-- Controles de Ação Rápida -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        
+        <!-- Seletor de Idioma -->
+        <div class="relative">
+          <select id="languageSelect" onchange="app.changeLanguage(this.value)" class="bg-stone-100/90 hover:bg-stone-200 text-stone-800 font-semibold text-xs sm:text-sm rounded-xl px-2.5 sm:px-3 py-2 border-none outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-sm">
+            <option value="en">🇬🇧 Inglês</option>
+            <option value="es">🇪🇸 Espanhol</option>
+            <option value="fr">🇫🇷 Francês</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="de">🇩🇪 Alemão</option>
+          </select>
+        </div>
+
+        <!-- Sequência Diária Persistente (Streak) -->
+        <div class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl font-bold text-xs sm:text-sm shadow-sm" title="Dias seguidos praticando">
+          <i class="fa-solid fa-fire text-amber-500 text-base"></i>
+          <span id="streakCount">1</span> <span class="hidden xs:inline">dia</span>
+        </div>
+
+        <!-- Botão Painel Acessibilidade -->
+        <button onclick="app.toggleAccessibilityModal()" class="w-10 h-10 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center transition shadow-sm" title="Ajustar visual para leitura">
+          <i class="fa-solid fa-universal-access text-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Abas de Navegação -->
+    <div class="max-w-5xl mx-auto px-4 flex gap-2 border-t border-black/5 overflow-x-auto py-2 scrollbar-none">
+      <button onclick="app.switchTab('daily')" id="tab-daily" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 bg-emerald-800 text-white shadow-sm transition whitespace-nowrap active:scale-95">
+        <i class="fa-solid fa-calendar-check"></i> Dose de Hoje
+      </button>
+      <button onclick="app.switchTab('practice')" id="tab-practice" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-medium text-stone-700 hover:bg-stone-100 transition whitespace-nowrap active:scale-95">
+        <i class="fa-solid fa-puzzle-piece"></i> Treino Suave
+      </button>
+      <button onclick="app.switchTab('tutor')" id="tab-tutor" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-medium text-stone-700 hover:bg-stone-100 transition whitespace-nowrap active:scale-95">
+        <i class="fa-solid fa-comments"></i> Tutor Paciente (IA)
+      </button>
+      <button onclick="app.switchTab('saved')" id="tab-saved" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-medium text-stone-700 hover:bg-stone-100 transition whitespace-nowrap active:scale-95">
+        <i class="fa-solid fa-bookmark"></i> Minha Coleção (<span id="savedCount">0</span>)
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6">
+    
+    <!-- VIEW 1: DOSE DO DIA -->
+    <section id="view-daily" class="space-y-6">
+      
+      <!-- Card acolhedor da data atual e status da meta diária -->
+      <div class="p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+        <div class="flex items-start gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl shrink-0 shadow-sm mt-0.5">
+            <i class="fa-solid fa-calendar-day"></i>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h2 id="dailyDateTitle" class="text-base sm:text-lg font-black text-emerald-950">
+                Sua Dose Diária de Hoje
+              </h2>
+              <span id="dailyStatusBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                Pendente hoje
+              </span>
+            </div>
+            <p class="text-xs sm:text-sm text-emerald-900/90 mt-0.5">
+              Apenas 2 a 3 blocos novos por dia para não sobrecarregar sua memória de leitura.
+            </p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+          <button onclick="app.openTopicGeneratorModal()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-semibold text-xs sm:text-sm shadow-sm transition flex items-center justify-center gap-2 whitespace-nowrap active:scale-95">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Tema com IA
+          </button>
+          <button onclick="app.generateNextDailyDose()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs sm:text-sm shadow-sm transition flex items-center justify-center gap-2 whitespace-nowrap active:scale-95" title="Sortear novas frases do acervo">
+            <i class="fa-solid fa-arrows-rotate"></i> Nova Dose
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Filtro de Contextos Práticos -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold scrollbar-none">
+        <span class="text-stone-400 font-medium whitespace-nowrap">Temas rápidos:</span>
+        <button onclick="app.filterTopic('all')" class="px-3.5 py-2 rounded-full bg-emerald-800 text-white transition whitespace-nowrap topic-chip min-h-[36px]" id="chip-all">Todos</button>
+        <button onclick="app.filterTopic('cafe')" class="px-3.5 py-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 transition whitespace-nowrap topic-chip min-h-[36px]" id="chip-cafe">☕ No Café / Restaurante</button>
+        <button onclick="app.filterTopic('direcoes')" class="px-3.5 py-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 transition whitespace-nowrap topic-chip min-h-[36px]" id="chip-direcoes">🗺️ Rua & Direções</button>
+        <button onclick="app.filterTopic('social')" class="px-3.5 py-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 transition whitespace-nowrap topic-chip min-h-[36px]" id="chip-social">🤝 Conhecer Pessoas</button>
+      </div>
+
+      <!-- Lista de Chunks do Dia -->
+      <div id="chunksContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Chunks renderizados dinamicamente pelo JavaScript -->
+      </div>
+    </section>
+
+    <!-- VIEW 2: TREINO SUAVE -->
+    <section id="view-practice" class="hidden space-y-6">
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-stone-200 shadow-sm text-center max-w-2xl mx-auto">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 text-xl mb-3 shadow-xs">
+          <i class="fa-solid fa-puzzle-piece"></i>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-black text-stone-900 mb-1">Treino sem Estresse</h2>
+        <p class="text-xs sm:text-sm text-stone-500 mb-4">Monte a frase na ordem certa tocando nas palavras. Sem tempo correndo e sem penalidade!</p>
+
+        <!-- Frase de significado em português com botão de escuta -->
+        <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 mb-5 flex items-center justify-between gap-3 text-left">
+          <div>
+            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block">Tradução / Sentido:</span>
+            <span id="practiceMeaning" class="text-base sm:text-lg font-extrabold text-stone-900 block mt-0.5">...</span>
+          </div>
+          <button onclick="app.playPracticeAudio()" class="w-11 h-11 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white flex items-center justify-center shrink-0 shadow-sm transition active:scale-95" title="Ouvir áudio da frase de apoio">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+        </div>
+
+        <!-- Slots selecionados pelo usuário -->
+        <div class="mb-4 text-left">
+          <span class="text-xs font-bold text-stone-400 block mb-1.5">Sua frase montada:</span>
+          <div id="selectedSlots" class="min-h-[56px] p-3 rounded-2xl bg-stone-50 border-2 border-dashed border-stone-200 flex flex-wrap gap-2 items-center">
+            <!-- Blocos colocados -->
+          </div>
+        </div>
+
+        <!-- Palavras disponíveis para tocar -->
+        <div class="mb-6 text-left">
+          <span class="text-xs font-bold text-stone-400 block mb-1.5">Toque nas palavras para adicionar:</span>
+          <div id="availableWords" class="flex flex-wrap gap-2.5 min-h-[50px]">
+            <!-- Blocos de palavras gerados via script -->
+          </div>
+        </div>
+
+        <!-- Feedback e Ação com botões fáceis no toque -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+          <button onclick="app.resetPractice()" class="px-5 py-3 rounded-2xl border border-stone-300 text-stone-700 font-semibold hover:bg-stone-50 transition text-sm flex items-center justify-center gap-2">
+            <i class="fa-solid fa-arrow-rotate-left"></i> Limpar
+          </button>
+          <button onclick="app.verifyPractice()" class="px-6 py-3 rounded-2xl bg-emerald-700 hover:bg-emerald-800 active:scale-95 text-white font-bold transition text-sm shadow-md flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check"></i> Verificar Conexão
+          </button>
+        </div>
+
+        <div id="practiceFeedback" class="mt-4 text-sm sm:text-base font-bold min-h-[30px] transition-all"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: TUTOR IA COM GEMINI (RESPOSTAS ULTRA CURTAS E ESPAÇADAS) -->
+    <section id="view-tutor" class="hidden space-y-4">
+      
+      <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-stone-200 flex flex-col h-[calc(100dvh-230px)] sm:h-[620px] min-h-[480px]">
+        
+        <!-- Cabeçalho do Chat -->
+        <div class="flex items-center justify-between pb-3 sm:pb-4 border-b border-stone-100">
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center text-lg shrink-0">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-stone-900 text-sm sm:text-base">Tutor Amigo (Gemini)</h3>
+              <p class="text-xs text-stone-500 hidden sm:block">Explicando tudo de forma visual, fonética e sem pressão</p>
+              <p class="text-xs text-stone-500 sm:hidden">Respostas curtas e áudio</p>
+            </div>
+          </div>
+          <button onclick="app.clearChat()" class="text-xs text-stone-400 hover:text-stone-700 font-semibold p-2">
+            <i class="fa-solid fa-trash-can"></i> <span class="hidden sm:inline">Limpar</span>
+          </button>
+        </div>
+
+        <!-- Mensagens do Chat -->
+        <div id="chatMessages" class="flex-1 overflow-y-auto p-2 sm:p-4 space-y-4">
+          <!-- Mensagem inicial de boas-vindas -->
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold shrink-0">
+              IA
+            </div>
+            <div class="bg-purple-50 text-stone-800 p-4 rounded-2xl rounded-tl-none border border-purple-100 max-w-xl text-sm leading-relaxed shadow-sm">
+              <p class="font-bold text-purple-950 mb-1">Olá! Eu sou seu tutor com paciência infinita.</p>
+              <p>Você pode me fazer qualquer pergunta sobre o idioma ou me pedir uma frase para situações do dia a dia (ex: <em>"Como peço um café com leite?"</em> ou <em>"Como digo que estou perdido?"</em>).</p>
+              <p class="mt-2 text-xs text-purple-800 font-semibold">Dica: Se você errar alguma letra ao digitar, relaxe! Eu entendo pelo contexto.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de sugestões de perguntas rápidas -->
+        <div class="py-2 flex gap-2 overflow-x-auto scrollbar-none text-xs">
+          <button onclick="app.sendQuickPrompt('Como eu peço um café de forma educada?')" class="px-3 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 whitespace-nowrap font-medium transition">
+            ☕ Pedir café educadamente
+          </button>
+          <button onclick="app.sendQuickPrompt('Como me apresentar dizendo meu nome e onde moro?')" class="px-3 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 whitespace-nowrap font-medium transition">
+            👋 Apresentar meu nome
+          </button>
+          <button onclick="app.sendQuickPrompt('Me dê 3 frases úteis para quando eu não entender algo que falaram.')" class="px-3 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 whitespace-nowrap font-medium transition">
+            ❓ O que dizer se não entender?
+          </button>
+        </div>
+
+        <!-- Formulário de Envio Otimizado para Mobile -->
+        <form onsubmit="app.handleSendMessage(event)" class="flex gap-2 pt-2 border-t border-stone-100 items-center">
+          <button 
+            type="button" 
+            id="speechMicBtn"
+            onclick="app.toggleSpeechRecognition()" 
+            class="w-12 h-12 rounded-2xl bg-stone-100 hover:bg-purple-100 text-stone-700 hover:text-purple-700 flex items-center justify-center text-lg transition shrink-0 active:scale-95" 
+            title="Falar em vez de digitar">
+            <i class="fa-solid fa-microphone"></i>
+          </button>
+          
+          <input 
+            type="text" 
+            id="chatInput"
+            placeholder="Pergunte ou toque no microfone..."
+            class="flex-1 bg-stone-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium text-stone-800 placeholder-stone-400 min-h-[48px]"
+            autocomplete="off"
+          />
+          <button 
+            type="submit" 
+            id="chatSubmitBtn"
+            class="w-12 h-12 sm:w-auto sm:px-5 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2 shrink-0 active:scale-95 min-h-[48px]">
+            <span class="hidden sm:inline">Enviar</span>
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </form>
+
+      </div>
+
+    </section>
+
+    <!-- VIEW 4: MINHA COLEÇÃO DE BLOCOS SALVOS -->
+    <section id="view-saved" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-black text-stone-900">Frases que você favoritou</h2>
+          <p class="text-sm text-stone-500">Revise o áudio e a pronúncia sempre que quiser</p>
+        </div>
+      </div>
+
+      <div id="savedListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Renderizado dinamicamente -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL DE ACESSIBILIDADE E PREFERÊNCIAS SENSORIAIS -->
+  <div id="accessibilityModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-stone-200 max-h-[90vh] overflow-y-auto space-y-6">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+        <div class="flex items-center gap-2 text-emerald-900 font-bold text-lg">
+          <i class="fa-solid fa-universal-access"></i>
+          <h3>Ajustes de Conforto Visual</h3>
+        </div>
+        <button onclick="app.toggleAccessibilityModal()" class="text-stone-400 hover:text-stone-700 text-xl font-bold w-8 h-8 rounded-full flex items-center justify-center">
+          ✕
+        </button>
+      </div>
+
+      <!-- 1. Tonalidade do Fundo (Redução de contraste excessivo) -->
+      <div>
+        <label class="block text-sm font-extrabold text-stone-800 mb-2">
+          Tom da Tela (Alivia a fadiga e distorção visual):
+        </label>
+        <div class="grid grid-cols-5 gap-2 text-xs font-semibold text-center">
+          <button onclick="app.setTheme('theme-cream')" class="p-3 rounded-2xl bg-[#FAF6EE] border-2 border-amber-300 text-stone-800 hover:scale-105 transition">
+            Creme
+          </button>
+          <button onclick="app.setTheme('theme-mint')" class="p-3 rounded-2xl bg-[#EFF7F2] border-2 border-emerald-200 text-stone-800 hover:scale-105 transition">
+            Menta
+          </button>
+          <button onclick="app.setTheme('theme-sky')" class="p-3 rounded-2xl bg-[#F0F4F8] border-2 border-sky-200 text-stone-800 hover:scale-105 transition">
+            Céu
+          </button>
+          <button onclick="app.setTheme('theme-peach')" class="p-3 rounded-2xl bg-[#FFF5EE] border-2 border-orange-200 text-stone-800 hover:scale-105 transition">
+            Pêssego
+          </button>
+          <button onclick="app.setTheme('theme-dark')" class="p-3 rounded-2xl bg-[#1A1F26] border-2 border-stone-600 text-white hover:scale-105 transition">
+            Noturno
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Escolha de Fonte -->
+      <div>
+        <label class="block text-sm font-extrabold text-stone-800 mb-2">
+          Fonte Especializada:
+        </label>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <button onclick="app.setFontFamily('lexend')" id="fontBtn-lexend" class="p-3 rounded-2xl border-2 border-emerald-600 bg-emerald-50 text-emerald-950 font-bold text-center">
+            Lexend (Fluidez)
+          </button>
+          <button onclick="app.setFontFamily('dyslexic')" id="fontBtn-dyslexic" class="p-3 rounded-2xl border-2 border-stone-200 bg-stone-50 text-stone-700 font-bold text-center font-dyslexic">
+            OpenDyslexic
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Espaçamento entre Letras e Linhas -->
+      <div class="space-y-4">
+        
+        <!-- Toggle da Régua de Leitura -->
+        <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 flex items-center justify-between">
+          <div>
+            <h4 class="font-bold text-stone-900 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-ruler-horizontal text-amber-600"></i>
+              Régua de Leitura Guiada
+            </h4>
+            <p class="text-xs text-stone-600">Destaca a linha onde seu dedo ou cursor está passando</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="rulerToggle" onchange="app.toggleReadingRuler(this.checked)" class="sr-only peer">
+            <div class="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+          </label>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-sm font-bold text-stone-800 mb-1">
+            <span>Espaço entre letras:</span>
+            <span id="letterSpacingVal">0.05em</span>
+          </div>
+          <input 
+            type="range" 
+            min="0" 
+            max="0.15" 
+            step="0.01" 
+            value="0.05" 
+            oninput="app.updateLetterSpacing(this.value)"
+            class="w-full accent-emerald-600 cursor-pointer h-2 bg-stone-200 rounded-lg" 
+          />
+        </div>
+
+        <div>
+          <div class="flex justify-between text-sm font-bold text-stone-800 mb-1">
+            <span>Altura da linha (espaçamento vertical):</span>
+            <span id="lineHeightVal">1.8</span>
+          </div>
+          <input 
+            type="range" 
+            min="1.4" 
+            max="2.4" 
+            step="0.1" 
+            value="1.8" 
+            oninput="app.updateLineHeight(this.value)"
+            class="w-full accent-emerald-600 cursor-pointer h-2 bg-stone-200 rounded-lg" 
+          />
+        </div>
+
+        <div>
+          <div class="flex justify-between text-sm font-bold text-stone-800 mb-1">
+            <span>Velocidade padrão da voz:</span>
+            <span id="voiceSpeedVal">0.85x</span>
+          </div>
+          <input 
+            type="range" 
+            min="0.5" 
+            max="1.2" 
+            step="0.05" 
+            value="0.85" 
+            oninput="app.updateVoiceSpeed(this.value)"
+            class="w-full accent-emerald-600 cursor-pointer h-2 bg-stone-200 rounded-lg" 
+          />
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL GERADOR DE TEMA COM IA -->
+  <div id="topicGeneratorModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-stone-100">
+        <div class="flex items-center gap-2 text-purple-900 font-bold text-lg">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <h3>Personalizar Microdose</h3>
+        </div>
+        <button onclick="app.closeTopicGeneratorModal()" class="text-stone-400 hover:text-stone-700 text-xl font-bold w-8 h-8 rounded-full flex items-center justify-center">
+          ✕
+        </button>
+      </div>
+
+      <p class="text-xs text-stone-600">
+        Sobre qual assunto do seu cotidiano você quer aprender 3 frases práticas agora?
+      </p>
+
+      <div class="flex flex-wrap gap-2 text-xs">
+        <button onclick="app.fillTopicPrompt('Passar na imigração ou aeroporto')" class="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-800 font-semibold hover:bg-purple-100">✈️ Aeroporto</button>
+        <button onclick="app.fillTopicPrompt('Comprar roupas e pedir meu tamanho')" class="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-800 font-semibold hover:bg-purple-100">🛍️ Loja de Roupas</button>
+        <button onclick="app.fillTopicPrompt('Conversar sobre jogos online e hobbies')" class="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-800 font-semibold hover:bg-purple-100">🎮 Videogames</button>
+        <button onclick="app.fillTopicPrompt('Pedir ajuda em emergência médica ou farmácia')" class="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-800 font-semibold hover:bg-purple-100">💊 Farmácia</button>
+      </div>
+
+      <input 
+        type="text" 
+        id="customTopicInput"
+        placeholder="Ou digite o tema: ex: Música, Fazer compras..."
+        class="w-full bg-stone-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium text-stone-800"
+      />
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="app.closeTopicGeneratorModal()" class="px-4 py-2.5 rounded-xl text-stone-600 font-semibold text-sm">Cancelar</button>
+        <button onclick="app.generateCustomTopicChunks()" id="generateTopicBtn" class="px-5 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-sm shadow-md transition flex items-center gap-2">
+          <span>Gerar Frases</span>
+          <i class="fa-solid fa-sparkles"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-stone-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-sm font-semibold">
+    <span id="toastIcon"><i class="fa-solid fa-circle-check text-emerald-400"></i></span>
+    <span id="toastMessage">Sucesso</span>
+  </div>
+
+  <script>
+    /**
+     * Base de dados inicial de Chunks Práticos com:
+     * - Palavra/Frase
+     * - Tradução objetiva
+     * - Guia Fonético em Português (associação imediata de som)
+     * - Decomposição em Sílabas/Partes visuais
+     * - Dica de contexto sem regras gramaticais pesadas
+     */
+    const languageDatabase = {
+      en: [
+        {
+          id: 'en-1',
+          phrase: "Could I have a coffee, please?",
+          meaning: "Poderia me dar um café, por favor?",
+          phoneticPt: "Cud ai réve a có-fi, plíz?",
+          syllables: ["Could", "I have", "a cof-fee", "please?"],
+          context: "Use em qualquer cafeteria ou restaurante. É gentil e universal.",
+          langCode: 'en-US'
+        },
+        {
+          id: 'en-2',
+          phrase: "Where is the restroom?",
+          meaning: "Onde fica o banheiro?",
+          phoneticPt: "Uér iz dê rést-rum?",
+          syllables: ["Where is", "the", "rest-room?"],
+          context: "Essencial para viagens. 'Restroom' soa muito educado.",
+          langCode: 'en-US'
+        },
+        {
+          id: 'en-3',
+          phrase: "Could you repeat that slowly?",
+          meaning: "Poderia repetir mais devagar?",
+          phoneticPt: "Cud iu ri-pít dét slou-li?",
+          syllables: ["Could you", "re-peat", "that", "slow-ly?"],
+          context: "Sua melhor amiga em conversas reais. Pessoas nativas adoram ajudar.",
+          langCode: 'en-US'
+        },
+        {
+          id: 'en-4',
+          phrase: "How much is this?",
+          meaning: "Quanto custa isto?",
+          phoneticPt: "Ráu mátch iz diz?",
+          syllables: ["How much", "is", "this?"],
+          context: "Perfeito para compras no dia a dia.",
+          langCode: 'en-US'
+        },
+        {
+          id: 'en-5',
+          phrase: "Nice to meet you, have a good day!",
+          meaning: "Prazer em te conhecer, tenha um bom dia!",
+          phoneticPt: "Náiss tu mít iu, réve a gud dêi!",
+          syllables: ["Nice to meet you", "have a", "good day!"],
+          context: "Despedida amigável e educada.",
+          langCode: 'en-US'
+        },
+        {
+          id: 'en-6',
+          phrase: "I'm still learning English.",
+          meaning: "Eu ainda estou aprendendo inglês.",
+          phoneticPt: "Áim stil lôr-ning Ín-glish.",
+          syllables: ["I'm still", "learn-ing", "En-glish."],
+          context: "Tira toda a pressão imediata de soar perfeito.",
+          langCode: 'en-US'
+        }
+      ],
+      es: [
+        {
+          id: 'es-1',
+          phrase: "¿Me puedes poner un café?",
+          meaning: "Pode me servir um café?",
+          phoneticPt: "Me puê-des po-nér un ca-fé?",
+          syllables: ["¿Me pue-des", "po-ner", "un ca-fé?"],
+          context: "Maneira super natural como os espanhóis pedem algo no balcão.",
+          langCode: 'es-ES'
+        },
+        {
+          id: 'es-2',
+          phrase: "No pasa nada, todo bien.",
+          meaning: "Não foi nada, está tudo bem.",
+          phoneticPt: "No pá-sa ná-da, tó-do bi-ên.",
+          syllables: ["No pa-sa na-da", "to-do bien"],
+          context: "Expressão favorita para tranquilizar os outros.",
+          langCode: 'es-ES'
+        },
+        {
+          id: 'es-3',
+          phrase: "¿Dónde está la parada de metro?",
+          meaning: "Onde fica a estação de metrô?",
+          phoneticPt: "Dôn-de es-tá la pa-rá-da de mê-tro?",
+          syllables: ["¿Dón-de es-tá", "la pa-ra-da", "de me-tro?"],
+          context: "Para se locomover com confiança nas cidades.",
+          langCode: 'es-ES'
+        }
+      ],
+      fr: [
+        {
+          id: 'fr-1',
+          phrase: "Un café, s'il vous plaît.",
+          meaning: "Um café, por favor.",
+          phoneticPt: "An ca-fé, sil vu plé.",
+          syllables: ["Un ca-fé", "s'il", "vous plaît"],
+          context: "Em francês, a gentileza abre todas as portas.",
+          langCode: 'fr-FR'
+        },
+        {
+          id: 'fr-2',
+          phrase: "C'est délicieux, merci!",
+          meaning: "Está delicioso, obrigado(a)!",
+          phoneticPt: "Sé dê-li-si-ô, mér-ci!",
+          syllables: ["C'est", "dé-li-cieux", "mer-ci!"],
+          context: "Elogie a refeição e encante qualquer anfitrião.",
+          langCode: 'fr-FR'
+        }
+      ],
+      it: [
+        {
+          id: 'it-1',
+          phrase: "Un espresso per favore.",
+          meaning: "Um espresso, por favor.",
+          phoneticPt: "Un es-prés-so per fa-vô-re.",
+          syllables: ["Un es-pres-so", "per fa-vo-re"],
+          context: "O clássico pedido em qualquer bar italiano.",
+          langCode: 'it-IT'
+        },
+        {
+          id: 'it-2',
+          phrase: "Piacere di conoscerti!",
+          meaning: "Prazer em te conhecer!",
+          phoneticPt: "Pia-tchê-re di co-nó-xer-ti!",
+          syllables: ["Pia-ce-re", "di", "co-no-scer-ti!"],
+          context: "Para começar conversas amigáveis.",
+          langCode: 'it-IT'
+        }
+      ],
+      de: [
+        {
+          id: 'de-1',
+          phrase: "Einen Kaffee, bitte.",
+          meaning: "Um café, por favor.",
+          phoneticPt: "Ái-nen Cá-fe, bí-te.",
+          syllables: ["Ei-nen", "Kaf-fee", "bit-te"],
+          context: "Curto, polido e muito direto ao ponto.",
+          langCode: 'de-DE'
+        },
+        {
+          id: 'de-2',
+          phrase: "Ich verstehe ein bisschen.",
+          meaning: "Eu entendo um pouquinho.",
+          phoneticPt: "Ixi fer-xte-e áin bís-xen.",
+          syllables: ["Ich ver-ste-he", "ein bis-schen"],
+          context: "Ótimo para quebrar o gelo sem medo.",
+          langCode: 'de-DE'
+        }
+      ]
+    };
+
+    class AppController {
+      constructor() {
+        this.currentLang = 'en';
+        this.activeTab = 'daily';
+        this.savedChunks = [];
+        this.voiceSpeed = 0.85;
+        this.currentPracticeIndex = 0;
+        this.selectedPracticeWords = [];
+        this.currentPracticeItem = null;
+        this.streak = 1;
+        this.lastActiveDate = null;
+        this.dailyDoneToday = false;
+        this.daySeed = 0;
+        this.synth = window.speechSynthesis;
+        this.currentTopicFilter = 'all';
+        this.recognition = null;
+        this.isRecording = false;
+        this.rulerActive = false;
+        this.currentTheme = 'theme-cream';
+        this.currentFont = 'lexend';
+        this.letterSpacing = '0.05';
+        this.lineHeight = '1.8';
+      }
+
+      init() {
+        this.loadSettingsAndData();
+        this.checkDailyCalendar();
+        this.renderDailyChunks();
+        this.setupPractice();
+        this.updateSavedCounter();
+        this.initReadingRuler();
+        this.initSpeechRecognition();
+      }
+
+      // Salva e restaura dados do localStorage do navegador
+      loadSettingsAndData() {
+        try {
+          const storedSaved = localStorage.getItem('lingo_saved_chunks');
+          if (storedSaved) this.savedChunks = JSON.parse(storedSaved);
+
+          const storedLang = localStorage.getItem('lingo_lang');
+          if (storedLang) {
+            this.currentLang = storedLang;
+            const selectEl = document.getElementById('languageSelect');
+            if (selectEl) selectEl.value = storedLang;
+          }
+
+          const storedTheme = localStorage.getItem('lingo_theme');
+          if (storedTheme) {
+            this.setTheme(storedTheme, false);
+          } else {
+            this.setTheme('theme-cream', false);
+          }
+
+          const storedFont = localStorage.getItem('lingo_font');
+          if (storedFont) this.setFontFamily(storedFont, false);
+
+          const storedSpeed = localStorage.getItem('lingo_voice_speed');
+          if (storedSpeed) {
+            this.voiceSpeed = parseFloat(storedSpeed);
+            const slider = document.querySelector('input[oninput*="updateVoiceSpeed"]');
+            if (slider) slider.value = storedSpeed;
+            const label = document.getElementById('voiceSpeedVal');
+            if (label) label.innerText = `${storedSpeed}x`;
+          }
+
+          const customChunks = localStorage.getItem('lingo_custom_chunks');
+          if (customChunks) {
+            const parsedCustom = JSON.parse(customChunks);
+            Object.keys(parsedCustom).forEach(lang => {
+              if (languageDatabase[lang]) {
+                languageDatabase[lang] = [...parsedCustom[lang], ...languageDatabase[lang]];
+              }
+            });
+          }
+        } catch (e) {
+          console.debug('Armazenamento local em modo fallback');
+        }
+      }
+
+      saveSettings() {
+        try {
+          localStorage.setItem('lingo_saved_chunks', JSON.stringify(this.savedChunks));
+          localStorage.setItem('lingo_lang', this.currentLang);
+          localStorage.setItem('lingo_theme', this.currentTheme);
+          localStorage.setItem('lingo_font', this.currentFont);
+          localStorage.setItem('lingo_voice_speed', this.voiceSpeed.toString());
+        } catch (e) {}
+      }
+
+      getTodayDateString() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      checkDailyCalendar() {
+        const todayStr = this.getTodayDateString();
+        const d = new Date();
+        const dayNames = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+        const currentDayName = dayNames[d.getDay()];
+
+        // Atualiza textos do cabeçalho
+        const titleEl = document.getElementById('dailyDateTitle');
+        if (titleEl) {
+          titleEl.innerText = `Sua Dose de ${currentDayName}`;
+        }
+        const badgeEl = document.getElementById('headerDateBadge');
+        if (badgeEl) {
+          badgeEl.innerText = `${currentDayName}`;
+        }
+
+        try {
+          const storedStreak = parseInt(localStorage.getItem('lingo_streak') || '1', 10);
+          const storedLastDate = localStorage.getItem('lingo_last_date');
+          const storedDoneDate = localStorage.getItem('lingo_done_date');
+
+          this.streak = storedStreak;
+          this.dailyDoneToday = storedDoneDate === todayStr;
+
+          if (!storedLastDate) {
+            // Primeiro acesso
+            this.streak = 1;
+            localStorage.setItem('lingo_last_date', todayStr);
+            localStorage.setItem('lingo_streak', '1');
+          } else if (storedLastDate !== todayStr) {
+            // Ver se foi ontem (ontem = 86400000 ms aprox)
+            const lastDateObj = new Date(storedLastDate);
+            const todayDateObj = new Date(todayStr);
+            const diffDays = Math.round((todayDateObj - lastDateObj) / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) {
+              // Sequência mantida! Se praticou ontem, a ofensiva continuou viva
+            } else if (diffDays > 1) {
+              // Passou mais de um dia: acolher sem culpa e reiniciar contagem suave
+              this.streak = 1;
+            }
+            localStorage.setItem('lingo_last_date', todayStr);
+            localStorage.setItem('lingo_streak', this.streak.toString());
+          }
+
+          // Cria uma semente de rotação automática do dia baseada no dia do ano
+          const startOfYear = new Date(d.getFullYear(), 0, 0);
+          const diff = d - startOfYear;
+          this.daySeed = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        } catch (e) {
+          this.streak = 1;
+        }
+
+        document.getElementById('streakCount').innerText = this.streak;
+        this.updateDailyStatusBadge();
+      }
+
+      markDailyCompleted() {
+        const todayStr = this.getTodayDateString();
+        if (!this.dailyDoneToday) {
+          this.dailyDoneToday = true;
+          this.streak += 1;
+          document.getElementById('streakCount').innerText = this.streak;
+          try {
+            localStorage.setItem('lingo_done_date', todayStr);
+            localStorage.setItem('lingo_streak', this.streak.toString());
+          } catch (e) {}
+          this.updateDailyStatusBadge();
+          this.showToast('Parabéns! Meta do dia alcançada! 🎉', 'success');
+        }
+      }
+
+      updateDailyStatusBadge() {
+        const badge = document.getElementById('dailyStatusBadge');
+        if (!badge) return;
+        if (this.dailyDoneToday) {
+          badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300";
+          badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Concluído hoje!`;
+        } else {
+          badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200";
+          badge.innerHTML = `<i class="fa-regular fa-clock text-amber-600 mr-1"></i> 2 min para hoje`;
+        }
+      }
+
+      generateNextDailyDose() {
+        this.daySeed += 1;
+        this.renderDailyChunks();
+        this.showToast('Nova dose de frases carregada!', 'info');
+      }
+
+      initReadingRuler() {
+        const ruler = document.getElementById('readingRuler');
+        window.addEventListener('mousemove', (e) => {
+          if (this.rulerActive) {
+            ruler.style.top = `${e.clientY - 24}px`;
+          }
+        });
+        window.addEventListener('touchmove', (e) => {
+          if (this.rulerActive && e.touches[0]) {
+            ruler.style.top = `${e.touches[0].clientY - 24}px`;
+          }
+        }, { passive: true });
+      }
+
+      toggleReadingRuler(active) {
+        this.rulerActive = active;
+        const ruler = document.getElementById('readingRuler');
+        ruler.style.display = active ? 'block' : 'none';
+        this.showToast(active ? 'Régua de leitura ativada!' : 'Régua de leitura desativada.', 'info');
+      }
+
+      initSpeechRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          const micBtn = document.getElementById('speechMicBtn');
+          if (micBtn) micBtn.title = "Reconhecimento de voz não suportado neste navegador";
+          return;
+        }
+
+        this.recognition = new SpeechRecognition();
+        this.recognition.lang = 'pt-BR';
+        this.recognition.interimResults = false;
+        this.recognition.continuous = false;
+
+        this.recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          const chatInput = document.getElementById('chatInput');
+          if (chatInput) {
+            chatInput.value = transcript;
+            this.showToast('Voz compreendida!', 'success');
+          }
+        };
+
+        this.recognition.onerror = () => {
+          this.stopRecordingUI();
+          this.showToast('Não foi possível captar o áudio. Tente novamente!', 'error');
+        };
+
+        this.recognition.onend = () => {
+          this.stopRecordingUI();
+        };
+      }
+
+      toggleSpeechRecognition() {
+        if (!this.recognition) {
+          this.showToast('O navegador não possui suporte a microfone aqui.', 'error');
+          return;
+        }
+
+        if (this.isRecording) {
+          this.recognition.stop();
+          this.stopRecordingUI();
+        } else {
+          try {
+            this.recognition.start();
+            this.isRecording = true;
+            const btn = document.getElementById('speechMicBtn');
+            btn.classList.add('mic-recording');
+            this.showToast('Pode falar com calma, estou ouvindo...', 'info');
+          } catch (e) {
+            this.stopRecordingUI();
+          }
+        }
+      }
+
+      stopRecordingUI() {
+        this.isRecording = false;
+        const btn = document.getElementById('speechMicBtn');
+        if (btn) btn.classList.remove('mic-recording');
+      }
+
+      speak(text, langCode = 'en-US', speedMultiplier = null) {
+        if (!this.synth) {
+          this.showToast('Síntese de voz não suportada neste navegador.', 'error');
+          return;
+        }
+
+        this.synth.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = langCode;
+        utterance.rate = speedMultiplier !== null ? speedMultiplier : parseFloat(this.voiceSpeed);
+        utterance.pitch = 1.0;
+
+        const voices = this.synth.getVoices();
+        const preferredVoice = voices.find(v => v.lang.startsWith(langCode.substring(0, 2)));
+        if (preferredVoice) {
+          utterance.voice = preferredVoice;
+        }
+
+        this.synth.speak(utterance);
+        
+        // Ouvir conta como participação na dose diária!
+        this.markDailyCompleted();
+      }
+
+      filterTopic(topic) {
+        this.currentTopicFilter = topic;
+        document.querySelectorAll('.topic-chip').forEach(c => {
+          c.classList.remove('bg-emerald-800', 'text-white');
+          c.classList.add('bg-stone-100', 'text-stone-700');
+        });
+        const activeChip = document.getElementById(`chip-${topic}`);
+        if (activeChip) {
+          activeChip.classList.add('bg-emerald-800', 'text-white');
+          activeChip.classList.remove('bg-stone-100', 'text-stone-700');
+        }
+        this.renderDailyChunks();
+      }
+
+      openTopicGeneratorModal() {
+        const modal = document.getElementById('topicGeneratorModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      closeTopicGeneratorModal() {
+        const modal = document.getElementById('topicGeneratorModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      fillTopicPrompt(text) {
+        document.getElementById('customTopicInput').value = text;
+      }
+
+      async generateCustomTopicChunks() {
+        const input = document.getElementById('customTopicInput');
+        const topic = input.value.trim() || "Situações do cotidiano";
+        const btn = document.getElementById('generateTopicBtn');
+
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Gerando...`;
+
+        try {
+          const langNames = { en: 'Inglês', es: 'Espanhol', fr: 'Francês', it: 'Italiano', de: 'Alemão' };
+          const targetName = langNames[this.currentLang] || 'Inglês';
+
+          const prompt = `Crie exatamente 3 frases curtas e práticas em ${targetName} sobre o tema: "${topic}".
+Responda APENAS em formato JSON válido contendo um array de 3 objetos com a estrutura:
+[
+  {
+    "phrase": "Frase no idioma original",
+    "meaning": "Tradução clara em português",
+    "phoneticPt": "Pronúncia fonética aproximada com sons do português",
+    "syllables": ["Bloco 1", "Bloco 2", "Bloco 3"],
+    "context": "Dica super curta de quando usar"
+  }
+]`;
+
+          const apiKey = "";
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+          const payload = {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              responseMimeType: "application/json"
+            }
+          };
+
+          const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await res.json();
+          const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+          if (jsonText) {
+            const parsed = JSON.parse(jsonText);
+            const langCodeMap = { en: 'en-US', es: 'es-ES', fr: 'fr-FR', it: 'it-IT', de: 'de-DE' };
+            const langCode = langCodeMap[this.currentLang] || 'en-US';
+
+            parsed.forEach((item, idx) => {
+              item.id = `custom-${Date.now()}-${idx}`;
+              item.langCode = langCode;
+              item.topic = 'custom';
+              languageDatabase[this.currentLang].unshift(item);
+            });
+
+            // Salva as frases geradas no localStorage para não perder
+            try {
+              const currentCustom = JSON.parse(localStorage.getItem('lingo_custom_chunks') || '{}');
+              if (!currentCustom[this.currentLang]) currentCustom[this.currentLang] = [];
+              currentCustom[this.currentLang].unshift(...parsed);
+              localStorage.setItem('lingo_custom_chunks', JSON.stringify(currentCustom));
+            } catch (e) {}
+
+            this.closeTopicGeneratorModal();
+            this.renderDailyChunks();
+            this.showToast(`3 novas frases criadas sobre "${topic}"!`, 'success');
+          }
+        } catch (e) {
+          this.showToast('Não foi possível gerar com IA agora. Tente de novo!', 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = `<span>Gerar Frases</span> <i class="fa-solid fa-sparkles"></i>`;
+        }
+      }
+
+      renderDailyChunks() {
+        const container = document.getElementById('chunksContainer');
+        let fullList = languageDatabase[this.currentLang] || [];
+
+        // Rotação diária suave: se estiver vendo 'todos', mostra uma fatia selecionada para hoje
+        let chunks = [...fullList];
+        if (this.currentTopicFilter === 'cafe') {
+          chunks = chunks.filter(c => c.phrase.toLowerCase().includes('coffee') || c.phrase.toLowerCase().includes('café') || c.meaning.toLowerCase().includes('café'));
+        } else if (this.currentTopicFilter === 'direcoes') {
+          chunks = chunks.filter(c => c.phrase.toLowerCase().includes('where') || c.phrase.toLowerCase().includes('dónde') || c.meaning.toLowerCase().includes('onde'));
+        } else if (this.currentTopicFilter === 'social') {
+          chunks = chunks.filter(c => c.phrase.toLowerCase().includes('slowly') || c.phrase.toLowerCase().includes('piacere') || c.meaning.toLowerCase().includes('repetir') || c.meaning.toLowerCase().includes('conhecer'));
+        } else {
+          // Rotaciona a ordem com base no dia do calendário para que cada dia apresente frases diferentes
+          if (chunks.length > 2) {
+            const offset = this.daySeed % chunks.length;
+            chunks = [...chunks.slice(offset), ...chunks.slice(0, offset)];
+          }
+        }
+        
+        container.innerHTML = '';
+
+        if (chunks.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-2 text-center py-10 bg-white rounded-3xl border border-stone-200">
+              <p class="text-stone-600 font-bold">Nenhuma frase encontrada para este filtro.</p>
+              <button onclick="app.filterTopic('all')" class="mt-3 px-4 py-2 rounded-xl bg-emerald-700 text-white text-xs font-bold">Ver todas as frases</button>
+            </div>
+          `;
+          return;
+        }
+
+        chunks.forEach((chunk, index) => {
+          const isSaved = this.savedChunks.some(s => s.id === chunk.id);
+          const card = document.createElement('div');
+          card.className = "chunk-card bg-white p-5 sm:p-6 rounded-3xl border border-stone-200/90 relative flex flex-col justify-between";
+
+          const syllablesHtml = chunk.syllables.map(syl => 
+            `<span class="syllable-badge">${syl}</span>`
+          ).join(' ');
+
+          const escapedPhrase = chunk.phrase.replace(/'/g, "\\'");
+
+          card.innerHTML = `
+            <div>
+              <div class="flex items-start justify-between gap-3 mb-3">
+                <span class="text-xs font-bold text-emerald-800 bg-emerald-100/70 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                  ${index === 0 ? '⭐ Foco de Hoje' : 'Bloco de Sentido'}
+                </span>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="app.toggleSaveChunk('${chunk.id}')" class="p-2 rounded-xl text-stone-400 hover:text-amber-500 hover:bg-stone-100 transition" title="Salvar para revisar">
+                    <i class="fa-${isSaved ? 'solid text-amber-500' : 'regular'} fa-bookmark text-base"></i>
+                  </button>
+                  <!-- Botão Ouvir Lento (Tartaruga) -->
+                  <button onclick="app.speak('${escapedPhrase}', '${chunk.langCode}', 0.65)" class="px-2.5 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 flex items-center gap-1 text-xs font-bold transition shadow-sm" title="Ouvir bem devagar (fonema por fonema)">
+                    🐢 <span>0.65x</span>
+                  </button>
+                  <!-- Botão Ouvir Normal -->
+                  <button onclick="app.speak('${escapedPhrase}', '${chunk.langCode}', 0.95)" class="w-10 h-10 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 flex items-center justify-center transition shadow-sm" title="Ouvir em velocidade natural">
+                    <i class="fa-solid fa-volume-high"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Frase Principal -->
+              <h3 class="text-xl sm:text-2xl font-black text-stone-900 mb-2 leading-tight">
+                ${chunk.phrase}
+              </h3>
+
+              <!-- Tradução clara e direta -->
+              <p class="text-base font-semibold text-stone-700 mb-4">
+                ${chunk.meaning}
+              </p>
+
+              <!-- Guia Fonético amigável -->
+              <div class="p-3 bg-amber-50/70 border border-amber-200/80 rounded-2xl mb-3">
+                <div class="flex items-center gap-2 text-xs font-bold text-amber-900 mb-1">
+                  <i class="fa-solid fa-microphone-lines"></i>
+                  <span>Como se diz (som aproximado em português):</span>
+                </div>
+                <p class="text-sm font-extrabold text-amber-950 tracking-wide font-sans">
+                  "${chunk.phoneticPt}"
+                </p>
+              </div>
+
+              <!-- Divisão Silábica/Blocos Visuais -->
+              <div class="mb-4">
+                <span class="text-xs font-bold text-stone-400 block mb-1.5">Blocos visuais de leitura:</span>
+                <div class="flex flex-wrap gap-1">
+                  ${syllablesHtml}
+                </div>
+              </div>
+            </div>
+
+            <!-- Dica de contexto real -->
+            <div class="pt-3 border-t border-stone-100 text-xs text-stone-500 flex items-center gap-2">
+              <i class="fa-solid fa-compass text-emerald-600"></i>
+              <span>${chunk.context}</span>
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+      }
+
+      setupPractice() {
+        const chunks = languageDatabase[this.currentLang] || [];
+        if (!chunks.length) return;
+
+        this.currentPracticeItem = chunks[this.currentPracticeIndex % chunks.length];
+        this.selectedPracticeWords = [];
+
+        const meaningEl = document.getElementById('practiceMeaning');
+        if (meaningEl) {
+          meaningEl.innerText = `"${this.currentPracticeItem.meaning}"`;
+        }
+
+        const feedbackEl = document.getElementById('practiceFeedback');
+        if (feedbackEl) {
+          feedbackEl.innerText = '';
+        }
+        
+        const cleanWords = this.currentPracticeItem.phrase
+          .replace(/[?.,!¿]/g, '')
+          .split(' ')
+          .filter(w => w.trim().length > 0);
+
+        const shuffled = [...cleanWords].sort(() => Math.random() - 0.5);
+
+        this.renderPracticeWords(shuffled);
+        this.renderSelectedSlots();
+      }
+
+      playPracticeAudio() {
+        if (!this.currentPracticeItem) return;
+        this.speak(this.currentPracticeItem.phrase, this.currentPracticeItem.langCode);
+      }
+
+      renderPracticeWords(words) {
+        const container = document.getElementById('availableWords');
+        container.innerHTML = '';
+
+        words.forEach((word) => {
+          const btn = document.createElement('button');
+          btn.className = "px-4 py-3 min-h-[48px] bg-stone-100 hover:bg-stone-200 active:scale-95 text-stone-900 font-bold rounded-2xl border border-stone-300 shadow-sm transition text-base touch-manipulation";
+          btn.innerText = word;
+          btn.onclick = () => {
+            this.selectWord(word, btn);
+          };
+          container.appendChild(btn);
+        });
+      }
+
+      selectWord(word, btnElement) {
+        this.selectedPracticeWords.push(word);
+        btnElement.style.visibility = 'hidden';
+        btnElement.dataset.selected = "true";
+        this.renderSelectedSlots();
+      }
+
+      renderSelectedSlots() {
+        const container = document.getElementById('selectedSlots');
+        if (this.selectedPracticeWords.length === 0) {
+          container.innerHTML = `<span class="text-stone-400 text-sm font-medium">Toque nos blocos abaixo para organizar...</span>`;
+          return;
+        }
+
+        container.innerHTML = '';
+        this.selectedPracticeWords.forEach((w, idx) => {
+          const pill = document.createElement('span');
+          pill.className = "px-3.5 py-2 bg-emerald-800 text-white rounded-xl font-bold text-sm shadow-sm flex items-center gap-2 cursor-pointer hover:bg-emerald-900 transition";
+          pill.innerHTML = `${w} <i class="fa-solid fa-xmark text-xs opacity-70"></i>`;
+          pill.onclick = () => this.unselectWord(idx);
+          container.appendChild(pill);
+        });
+      }
+
+      unselectWord(index) {
+        const removed = this.selectedPracticeWords.splice(index, 1)[0];
+        const buttons = document.querySelectorAll('#availableWords button');
+        for (let b of buttons) {
+          if (b.innerText === removed && b.style.visibility === 'hidden') {
+            b.style.visibility = 'visible';
+            break;
+          }
+        }
+        this.renderSelectedSlots();
+      }
+
+      resetPractice() {
+        this.setupPractice();
+      }
+
+      verifyPractice() {
+        const targetClean = this.currentPracticeItem.phrase
+          .replace(/[?.,!¿]/g, '')
+          .toLowerCase()
+          .trim();
+
+        const userClean = this.selectedPracticeWords.join(' ').toLowerCase().trim();
+        const feedbackEl = document.getElementById('practiceFeedback');
+
+        if (userClean === targetClean) {
+          feedbackEl.innerHTML = `
+            <span class="text-emerald-700 bg-emerald-100 px-4 py-2 rounded-2xl inline-flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-xl"></i> Fantástico! Você associou o som e a estrutura perfeitamente!
+            </span>
+          `;
+          this.speak(this.currentPracticeItem.phrase, this.currentPracticeItem.langCode);
+          this.markDailyCompleted();
+
+          setTimeout(() => {
+            this.currentPracticeIndex++;
+            this.setupPractice();
+          }, 2200);
+        } else {
+          feedbackEl.innerHTML = `
+            <span class="text-amber-800 bg-amber-100 px-4 py-2 rounded-2xl inline-flex items-center gap-2">
+              <i class="fa-solid fa-ear-listen text-xl"></i> Quase lá! Toque no alto-falante verde para ouvir a ordem novamente com calma.
+            </span>
+          `;
+        }
+      }
+
+      async handleSendMessage(e) {
+        e.preventDefault();
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        input.value = '';
+        this.appendChatMessage('user', text);
+
+        const submitBtn = document.getElementById('chatSubmitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+
+        const typingId = this.appendTypingIndicator();
+
+        try {
+          const langNames = {
+            en: 'Inglês',
+            es: 'Espanhol',
+            fr: 'Francês',
+            it: 'Italiano',
+            de: 'Alemão'
+          };
+          const targetLangName = langNames[this.currentLang] || 'Inglês';
+
+          const systemInstruction = `
+Você é o tutor amigável do app LingoSuave, especialista em ensinar ${targetLangName} para pessoas com dislexia.
+Regras fundamentais e estritas:
+1. NUNCA gere blocos longos ou densos de texto. Mantenha as respostas concisas e visuais.
+2. Use espaçamento generoso entre linhas e separe as ideias em tópicos curtinhos.
+3. Se o usuário tiver cometido erros de digitação ou ortografia em português ou na outra língua, NÃO aponte o erro nem corrija gramática de forma punitiva. Compreenda a intenção e responda naturalmente.
+4. Para qualquer frase ou palavra em ${targetLangName}, sempre forneça:
+   - A frase original em negrito
+   - A pronúncia fonética aproximada com o alfabeto do Português (Ex: "Ráu ar iu?")
+   - O significado direto em português
+5. Ensine 'chunks' (frases prontas de uso diário) em vez de regras de conjugação abstratas.
+6. Mantenha um tom acolhedor, calmo e encorajador.
+          `.trim();
+
+          const apiKey = "";
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+          const payload = {
+            contents: [
+              {
+                role: 'user',
+                parts: [{ text: text }]
+              }
+            ],
+            systemInstruction: {
+              parts: [{ text: systemInstruction }]
+            }
+          };
+
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await response.json();
+          this.removeTypingIndicator(typingId);
+
+          if (data && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+            const reply = data.candidates[0].content.parts[0].text;
+            this.appendChatMessage('model', reply);
+            this.markDailyCompleted();
+          } else {
+            this.appendChatMessage('model', "Tive uma pequena lentidão de conexão, mas você pode me perguntar de novo quando quiser!");
+          }
+        } catch (err) {
+          this.removeTypingIndicator(typingId);
+          this.appendChatMessage('model', "Não consegui me conectar aos servidores agora. Que tal revisarmos os blocos da aba 'Dose do Dia' enquanto isso?");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>Enviar</span> <i class="fa-solid fa-paper-plane"></i>`;
+        }
+      }
+
+      sendQuickPrompt(promptText) {
+        document.getElementById('chatInput').value = promptText;
+        document.getElementById('chatSubmitBtn').click();
+      }
+
+      appendChatMessage(sender, text) {
+        const chatContainer = document.getElementById('chatMessages');
+        const bubble = document.createElement('div');
+        
+        if (sender === 'user') {
+          bubble.className = "flex items-end justify-end gap-2";
+          bubble.innerHTML = `
+            <div class="bg-emerald-700 text-white p-4 rounded-2xl rounded-tr-none max-w-xl text-sm leading-relaxed shadow-sm font-medium">
+              ${this.escapeHtml(text)}
+            </div>
+            <div class="w-8 h-8 rounded-full bg-emerald-200 text-emerald-900 flex items-center justify-center text-xs font-bold shrink-0">
+              Você
+            </div>
+          `;
+        } else {
+          bubble.className = "flex items-start gap-3";
+          const formatted = this.formatModelReply(text);
+
+          bubble.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold shrink-0">
+              IA
+            </div>
+            <div class="bg-purple-50/90 text-stone-900 p-4 rounded-2xl rounded-tl-none border border-purple-100 max-w-xl text-sm leading-relaxed shadow-sm relative group">
+              ${formatted}
+              <button onclick="app.speakReply(this)" class="mt-3 text-xs bg-white text-purple-800 font-bold px-3 py-1.5 rounded-xl border border-purple-200 hover:bg-purple-100 flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-volume-high"></i> Ouvir resposta
+              </button>
+            </div>
+          `;
+        }
+
+        chatContainer.appendChild(bubble);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      speakReply(btn) {
+        const bubble = btn.parentElement;
+        const clone = bubble.cloneNode(true);
+        const b = clone.querySelector('button');
+        if (b) b.remove();
+        this.speak(clone.innerText, 'pt-BR');
+      }
+
+      formatModelReply(text) {
+        let clean = this.escapeHtml(text);
+        clean = clean.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-stone-950">$1</strong>');
+        clean = clean.replace(/\n\n/g, '<div class="h-3"></div>');
+        clean = clean.replace(/\n/g, '<br/>');
+        return clean;
+      }
+
+      appendTypingIndicator() {
+        const id = 'typing-' + Date.now();
+        const chatContainer = document.getElementById('chatMessages');
+        const bubble = document.createElement('div');
+        bubble.id = id;
+        bubble.className = "flex items-center gap-3";
+        bubble.innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold">
+            IA
+          </div>
+          <div class="bg-stone-100 text-stone-500 px-4 py-3 rounded-2xl text-xs font-medium flex items-center gap-2">
+            <i class="fa-solid fa-circle-notch fa-spin text-purple-600"></i>
+            Preparando resposta clara...
+          </div>
+        `;
+        chatContainer.appendChild(bubble);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        return id;
+      }
+
+      removeTypingIndicator(id) {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+      }
+
+      clearChat() {
+        const chatContainer = document.getElementById('chatMessages');
+        chatContainer.innerHTML = '';
+        this.appendChatMessage('model', "Conversa limpa! O que você gostaria de explorar hoje?");
+      }
+
+      toggleSaveChunk(chunkId) {
+        const chunks = languageDatabase[this.currentLang] || [];
+        const item = chunks.find(c => c.id === chunkId);
+        if (!item) return;
+
+        const index = this.savedChunks.findIndex(s => s.id === chunkId);
+        if (index >= 0) {
+          this.savedChunks.splice(index, 1);
+          this.showToast('Item removido da sua coleção.', 'info');
+        } else {
+          this.savedChunks.push(item);
+          this.showToast('Frase salva com sucesso!', 'success');
+        }
+
+        this.saveSettings();
+        this.updateSavedCounter();
+        this.renderDailyChunks();
+        this.renderSavedList();
+      }
+
+      renderSavedList() {
+        const container = document.getElementById('savedListContainer');
+        if (!container) return;
+
+        if (this.savedChunks.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-2 text-center py-12 bg-white rounded-3xl border border-stone-200">
+              <i class="fa-regular fa-bookmark text-4xl text-stone-300 mb-3 block"></i>
+              <p class="text-stone-600 font-bold text-base">Sua coleção está vazia no momento.</p>
+              <p class="text-stone-400 text-sm mt-1">Toque no ícone de marcador nos cartões da Dose do Dia para guardar suas frases favoritas.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = '';
+        this.savedChunks.forEach(chunk => {
+          const card = document.createElement('div');
+          card.className = "bg-white p-5 rounded-3xl border border-stone-200 flex flex-col justify-between shadow-sm";
+          card.innerHTML = `
+            <div>
+              <div class="flex justify-between items-start mb-2">
+                <h4 class="text-xl font-black text-stone-900">${chunk.phrase}</h4>
+                <button onclick="app.speak('${chunk.phrase.replace(/'/g, "\\'")}', '${chunk.langCode}')" class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                  <i class="fa-solid fa-volume-high"></i>
+                </button>
+              </div>
+              <p class="text-sm font-semibold text-stone-600 mb-3">${chunk.meaning}</p>
+              <div class="text-xs bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-amber-950 font-bold mb-3">
+                Fonética: "${chunk.phoneticPt}"
+              </div>
+            </div>
+            <div class="flex justify-between items-center pt-2 border-t border-stone-100">
+              <span class="text-xs text-stone-400">${chunk.context}</span>
+              <button onclick="app.toggleSaveChunk('${chunk.id}')" class="text-xs text-rose-500 font-bold hover:underline">
+                Remover
+              </button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
+
+      updateSavedCounter() {
+        document.getElementById('savedCount').innerText = this.savedChunks.length;
+      }
+
+      switchTab(tabName) {
+        this.activeTab = tabName;
+
+        ['daily', 'practice', 'tutor', 'saved'].forEach(t => {
+          const view = document.getElementById(`view-${t}`);
+          const btn = document.getElementById(`tab-${t}`);
+          if (view) view.classList.add('hidden');
+          if (btn) {
+            btn.classList.remove('bg-emerald-800', 'text-white', 'shadow-sm');
+            btn.classList.add('text-stone-700');
+          }
+        });
+
+        const activeView = document.getElementById(`view-${tabName}`);
+        const activeBtn = document.getElementById(`tab-${tabName}`);
+        if (activeView) activeView.classList.remove('hidden');
+        if (activeBtn) {
+          activeBtn.classList.add('bg-emerald-800', 'text-white', 'shadow-sm');
+          activeBtn.classList.remove('text-stone-700');
+        }
+
+        if (tabName === 'saved') {
+          this.renderSavedList();
+        }
+      }
+
+      changeLanguage(lang) {
+        this.currentLang = lang;
+        this.saveSettings();
+        this.renderDailyChunks();
+        this.setupPractice();
+        this.showToast(`Idioma alterado! Aproveite os blocos de hoje.`, 'success');
+      }
+
+      toggleAccessibilityModal() {
+        const modal = document.getElementById('accessibilityModal');
+        modal.classList.toggle('hidden');
+        modal.classList.toggle('flex');
+      }
+
+      setTheme(themeClass, notify = true) {
+        this.currentTheme = themeClass;
+        document.body.classList.remove('theme-cream', 'theme-mint', 'theme-sky', 'theme-peach', 'theme-dark');
+        document.body.classList.add(themeClass);
+        this.saveSettings();
+        if (notify) this.showToast('Tonalidade da tela ajustada.', 'info');
+      }
+
+      setFontFamily(fontKey, notify = true) {
+        this.currentFont = fontKey;
+        const btnLexend = document.getElementById('fontBtn-lexend');
+        const btnDyslexic = document.getElementById('fontBtn-dyslexic');
+
+        if (fontKey === 'dyslexic') {
+          document.body.classList.remove('font-lexend');
+          document.body.classList.add('font-dyslexic');
+          if (btnDyslexic && btnLexend) {
+            btnDyslexic.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-950');
+            btnDyslexic.classList.remove('border-stone-200', 'bg-stone-50', 'text-stone-700');
+            btnLexend.classList.remove('border-emerald-600', 'bg-emerald-50', 'text-emerald-950');
+            btnLexend.classList.add('border-stone-200', 'bg-stone-50', 'text-stone-700');
+          }
+        } else {
+          document.body.classList.remove('font-dyslexic');
+          document.body.classList.add('font-lexend');
+          if (btnLexend && btnDyslexic) {
+            btnLexend.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-950');
+            btnLexend.classList.remove('border-stone-200', 'bg-stone-50', 'text-stone-700');
+            btnDyslexic.classList.remove('border-emerald-600', 'bg-emerald-50', 'text-emerald-950');
+            btnDyslexic.classList.add('border-stone-200', 'bg-stone-50', 'text-stone-700');
+          }
+        }
+        this.saveSettings();
+        if (notify) this.showToast('Fonte atualizada com sucesso.', 'info');
+      }
+
+      updateLetterSpacing(val) {
+        this.letterSpacing = val;
+        document.body.style.letterSpacing = `${val}em`;
+        document.getElementById('letterSpacingVal').innerText = `${val}em`;
+      }
+
+      updateLineHeight(val) {
+        this.lineHeight = val;
+        document.body.style.lineHeight = val;
+        document.getElementById('lineHeightVal').innerText = val;
+      }
+
+      updateVoiceSpeed(val) {
+        this.voiceSpeed = parseFloat(val);
+        document.getElementById('voiceSpeedVal').innerText = `${val}x`;
+        this.saveSettings();
+      }
+
+      showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        const msgEl = document.getElementById('toastMessage');
+        const iconEl = document.getElementById('toastIcon');
+
+        msgEl.innerText = message;
+        if (type === 'error') {
+          iconEl.innerHTML = `<i class="fa-solid fa-circle-exclamation text-rose-400"></i>`;
+        } else if (type === 'info') {
+          iconEl.innerHTML = `<i class="fa-solid fa-circle-info text-sky-400"></i>`;
+        } else {
+          iconEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i>`;
+        }
+
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        setTimeout(() => {
+          toast.classList.remove('translate-y-0', 'opacity-100');
+          toast.classList.add('translate-y-20', 'opacity-0');
+        }, 2800);
+      }
+
+      escapeHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+    }
+
+    // Inicialização da Aplicação
+    const app = new AppController();
+    window.addEventListener('DOMContentLoaded', () => {
+      app.init();
+    });
+  </script>
+</body>
+</html>
