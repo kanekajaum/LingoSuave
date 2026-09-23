@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>LingoSuave - Aprenda Idiomas no Seu Ritmo</title>
+  <title>LingoSuave - Idiomas com Acessibilidade</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,7 +14,7 @@
   <!-- Google Fonts: Lexend (alta legibilidade para dislexia) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- CDN para fonte OpenDyslexic -->
   <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/open-dyslexic" />
@@ -25,41 +25,40 @@
       --app-bg: #FAF6EE;
       --app-card: #FFFFFF;
       --app-text: #23272F;
-      --app-accent: #2A7B62;
-      --app-letter-spacing: 0.04em;
-      --app-line-height: 1.75;
+      --app-letter-spacing: 0.02em;
+      --app-line-height: 1.5;
     }
 
     * {
       -webkit-tap-highlight-color: transparent;
-      scrollbar-width: none !important; /* Firefox */
-      -ms-overflow-style: none !important; /* IE/Edge */
+      box-sizing: border-box;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
     }
 
-    /* Remove 100% das barras de rolagem cinzas no Android WebView / Kodular */
     *::-webkit-scrollbar {
       display: none !important;
       width: 0 !important;
       height: 0 !important;
-      background: transparent !important;
     }
 
-    body {
+    html, body {
       font-family: var(--app-font);
       background-color: var(--app-bg);
       color: var(--app-text);
       letter-spacing: var(--app-letter-spacing);
       line-height: var(--app-line-height);
-      transition: background-color 0.25s ease, color 0.25s ease;
-      padding-top: env(safe-area-inset-top, 0px);
-      padding-bottom: env(safe-area-inset-bottom, 16px);
+      overflow-x: hidden;
+      width: 100%;
       -webkit-font-smoothing: antialiased;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 12px);
+      font-size: 13.5px;
     }
 
     .font-dyslexic {
       font-family: 'OpenDyslexic', 'Lexend', sans-serif !important;
     }
-
     .font-lexend {
       font-family: 'Lexend', sans-serif !important;
     }
@@ -72,8 +71,8 @@
     .theme-dark  { --app-bg: #181D24; --app-card: #222832; --app-text: #F1F4F9; }
 
     .chunk-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
     .chunk-card:active {
       transform: scale(0.99);
@@ -81,48 +80,39 @@
 
     .syllable-badge {
       display: inline-block;
-      padding: 3px 10px;
-      margin: 2px;
+      padding: 2px 8px;
+      margin: 1.5px;
       border-radius: 9999px;
       font-weight: 700;
       background-color: #E8F3ED;
       color: #165638;
       border: 1px solid #C5E2D2;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
     }
 
-    /* Régua de leitura visual para dislexia */
     #readingRuler {
       position: fixed;
       left: 0;
       width: 100vw;
-      height: 48px;
-      background-color: rgba(254, 240, 138, 0.32);
-      border-top: 2px solid rgba(234, 179, 8, 0.65);
-      border-bottom: 2px solid rgba(234, 179, 8, 0.65);
+      height: 40px;
+      background-color: rgba(254, 240, 138, 0.35);
+      border-top: 2px solid rgba(234, 179, 8, 0.7);
+      border-bottom: 2px solid rgba(234, 179, 8, 0.7);
       pointer-events: none;
       z-index: 9999;
       display: none;
-      transition: top 0.06s ease-out;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.06);
+      transition: top 0.05s ease-out;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.08);
     }
 
     @keyframes audio-pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.18); }
+      50% { transform: scale(1.15); }
     }
     .audio-playing {
-      animation: audio-pulse 0.9s infinite ease-in-out;
+      animation: audio-pulse 0.7s infinite ease-in-out;
       background-color: #10B981 !important;
       color: white !important;
-    }
-
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
     }
   </style>
 </head>
@@ -132,216 +122,211 @@
   <!-- Régua de Leitura Virtual -->
   <div id="readingRuler"></div>
 
-  <!-- Cabeçalho Principal Otimizado para Mobile -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-xs">
-    <div class="max-w-4xl mx-auto px-3.5 py-2.5 flex items-center justify-between gap-2">
+  <!-- Cabeçalho Compacto Padrão Mobile -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-xs">
+    <div class="max-w-md mx-auto px-3 py-2 flex items-center justify-between gap-1.5">
       
       <!-- Marca -->
-      <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-lg shadow-sm shrink-0">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-xl bg-emerald-800 text-white flex items-center justify-center text-sm shadow-xs shrink-0">
           <i class="fa-solid fa-feather-pointed"></i>
         </div>
         <div>
-          <h1 class="text-base sm:text-lg font-black text-stone-900 tracking-tight leading-none">LingoSuave</h1>
-          <span id="headerDateBadge" class="text-[11px] font-semibold text-stone-500">Hoje</span>
+          <h1 class="text-xs font-black text-stone-900 tracking-tight leading-none">LingoSuave</h1>
+          <span id="headerDateBadge" class="text-[10px] font-semibold text-stone-500">Hoje</span>
         </div>
       </div>
 
       <!-- Controles: Idioma, Streak e Acessibilidade -->
-      <div class="flex items-center gap-1.5 sm:gap-2">
-        <select id="languageSelect" onchange="app.changeLanguage(this.value)" class="bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs rounded-xl px-2 py-2 border-none outline-none focus:ring-2 focus:ring-emerald-600 cursor-pointer shadow-xs">
-          <option value="en">🇬🇧 Inglês</option>
-          <option value="es">🇪🇸 Espanhol</option>
-          <option value="fr">🇫🇷 Francês</option>
-          <option value="it">🇮🇹 Italiano</option>
-          <option value="de">🇩🇪 Alemão</option>
+      <div class="flex items-center gap-1.5">
+        <select id="languageSelect" onchange="app.changeLanguage(this.value)" class="bg-stone-100 text-stone-800 font-bold text-[11px] rounded-lg px-2 py-1.5 border-none outline-none focus:ring-1 focus:ring-emerald-600 cursor-pointer">
+          <option value="en">🇬🇧 EN</option>
+          <option value="es">🇪🇸 ES</option>
+          <option value="fr">🇫🇷 FR</option>
+          <option value="it">🇮🇹 IT</option>
+          <option value="de">🇩🇪 DE</option>
         </select>
 
-        <div class="flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl font-black text-xs shadow-xs" title="Sequência de dias">
-          <i class="fa-solid fa-fire text-amber-500 text-sm"></i>
+        <div class="flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 text-amber-900 rounded-lg font-black text-[11px]" title="Sequência de dias">
+          <i class="fa-solid fa-fire text-amber-500 text-xs"></i>
           <span id="streakCount">1</span>
         </div>
 
-        <button onclick="app.toggleAccessibilityModal()" class="w-9 h-9 rounded-xl bg-stone-100 active:bg-stone-200 text-stone-700 flex items-center justify-center transition shadow-xs" title="Ajustes visuais">
-          <i class="fa-solid fa-universal-access text-base"></i>
+        <button onclick="app.toggleAccessibilityModal()" class="w-7 h-7 rounded-lg bg-stone-100 active:bg-stone-200 text-stone-700 flex items-center justify-center" title="Ajustes visuais">
+          <i class="fa-solid fa-universal-access text-xs"></i>
         </button>
       </div>
     </div>
 
-    <!-- Abas com rolagem suave sem barras cinzas -->
-    <div class="max-w-4xl mx-auto px-3 flex gap-1.5 border-t border-stone-100 overflow-x-auto py-2 no-scrollbar">
-      <button onclick="app.switchTab('daily')" id="tab-daily" class="tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 bg-emerald-800 text-white shadow-xs transition whitespace-nowrap active:scale-95">
-        <i class="fa-solid fa-calendar-check"></i> Dose de Hoje
+    <!-- Abas Compactas Deslizantes -->
+    <div class="max-w-md mx-auto px-2 flex gap-1 border-t border-stone-100 overflow-x-auto py-1.5">
+      <button onclick="app.switchTab('daily')" id="tab-daily" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 bg-emerald-800 text-white shadow-xs whitespace-nowrap active:scale-95">
+        <i class="fa-solid fa-calendar-check text-[10px]"></i> Dose de Hoje
       </button>
-      <button onclick="app.switchTab('practice')" id="tab-practice" class="tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-stone-700 bg-stone-50 hover:bg-stone-100 transition whitespace-nowrap active:scale-95">
-        <i class="fa-solid fa-puzzle-piece"></i> Treino Suave
+      <button onclick="app.switchTab('practice')" id="tab-practice" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold text-stone-700 bg-stone-50 hover:bg-stone-100 whitespace-nowrap active:scale-95">
+        <i class="fa-solid fa-puzzle-piece text-[10px]"></i> Treino Suave
       </button>
-      <button onclick="app.switchTab('tutor')" id="tab-tutor" class="tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-stone-700 bg-stone-50 hover:bg-stone-100 transition whitespace-nowrap active:scale-95">
-        <i class="fa-solid fa-comments"></i> Tutor Paciente
+      <button onclick="app.switchTab('tutor')" id="tab-tutor" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold text-stone-700 bg-stone-50 hover:bg-stone-100 whitespace-nowrap active:scale-95">
+        <i class="fa-solid fa-comments text-[10px]"></i> Tutor IA
       </button>
-      <button onclick="app.switchTab('saved')" id="tab-saved" class="tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-stone-700 bg-stone-50 hover:bg-stone-100 transition whitespace-nowrap active:scale-95">
-        <i class="fa-solid fa-bookmark"></i> Salvos (<span id="savedCount">0</span>)
+      <button onclick="app.switchTab('saved')" id="tab-saved" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold text-stone-700 bg-stone-50 hover:bg-stone-100 whitespace-nowrap active:scale-95">
+        <i class="fa-solid fa-bookmark text-[10px]"></i> Salvos (<span id="savedCount">0</span>)
       </button>
     </div>
   </header>
 
-  <main class="flex-1 max-w-4xl w-full mx-auto p-3.5 sm:p-5 pb-10">
+  <main class="flex-1 max-w-md w-full mx-auto px-3 py-2.5 pb-8">
     
     <!-- VIEW 1: DOSE DO DIA -->
-    <section id="view-daily" class="space-y-4">
+    <section id="view-daily" class="space-y-3">
       
-      <!-- Card da Meta do Dia -->
-      <div class="p-4 rounded-3xl bg-gradient-to-br from-emerald-50 to-emerald-100/60 border border-emerald-200/90 flex flex-col gap-3 shadow-xs">
-        <div class="flex items-start gap-3">
-          <div class="w-11 h-11 rounded-2xl bg-emerald-700 text-white flex items-center justify-center text-lg shrink-0 shadow-xs mt-0.5">
+      <!-- Card da Meta do Dia (Redimensionado e Proporcional) -->
+      <div class="p-3 rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-200 flex flex-col gap-2 shadow-xs">
+        <div class="flex items-start gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-sm shrink-0 mt-0.5">
             <i class="fa-solid fa-calendar-day"></i>
           </div>
           <div class="flex-1 min-w-0">
-            <div class="flex flex-wrap items-center gap-1.5 mb-1">
-              <h2 id="dailyDateTitle" class="text-base sm:text-lg font-black text-emerald-950 leading-tight">
+            <div class="flex flex-wrap items-center gap-1.5 mb-0.5">
+              <h2 id="dailyDateTitle" class="text-xs font-black text-emerald-950 leading-tight">
                 Sua Dose de Hoje
               </h2>
-              <span id="dailyStatusBadge" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+              <span id="dailyStatusBadge" class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
                 2 min para hoje
               </span>
             </div>
-            <p class="text-xs text-emerald-900/90 font-medium leading-relaxed">
-              2 a 3 blocos novos por dia para não sobrecarregar sua memória de leitura.
+            <p class="text-[11px] text-emerald-900/80 font-medium leading-tight">
+              2 a 3 blocos novos por dia para não sobrecarregar sua leitura.
             </p>
           </div>
         </div>
 
-        <div class="flex gap-2 pt-1">
-          <button onclick="app.openTopicGeneratorModal()" class="flex-1 px-3 py-2.5 rounded-xl bg-purple-700 active:bg-purple-800 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Tema com IA
+        <div class="flex gap-1.5 pt-0.5">
+          <button onclick="app.openTopicGeneratorModal()" class="flex-1 px-2.5 py-1.5 rounded-lg bg-purple-700 active:bg-purple-800 text-white font-bold text-[11px] shadow-xs transition flex items-center justify-center gap-1">
+            <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> Tema IA
           </button>
-          <button onclick="app.generateNextDailyDose()" class="flex-1 px-3 py-2.5 rounded-xl bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-arrows-rotate"></i> Nova Dose
+          <button onclick="app.generateNextDailyDose()" class="flex-1 px-2.5 py-1.5 rounded-lg bg-emerald-700 active:bg-emerald-800 text-white font-bold text-[11px] shadow-xs transition flex items-center justify-center gap-1">
+            <i class="fa-solid fa-arrows-rotate text-[10px]"></i> Nova Dose
           </button>
         </div>
       </div>
 
-      <!-- Filtros Rápidos Sem Scrollbar Visível -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold no-scrollbar">
-        <span class="text-stone-400 font-semibold whitespace-nowrap text-[11px]">Temas:</span>
-        <button onclick="app.filterTopic('all')" class="px-3.5 py-1.5 rounded-full bg-emerald-800 text-white transition whitespace-nowrap topic-chip min-h-[34px]" id="chip-all">Todos</button>
-        <button onclick="app.filterTopic('cafe')" class="px-3.5 py-1.5 rounded-full bg-stone-100 text-stone-700 transition whitespace-nowrap topic-chip min-h-[34px]" id="chip-cafe">☕ Café & Comida</button>
-        <button onclick="app.filterTopic('direcoes')" class="px-3.5 py-1.5 rounded-full bg-stone-100 text-stone-700 transition whitespace-nowrap topic-chip min-h-[34px]" id="chip-direcoes">🗺️ Rua & Direções</button>
-        <button onclick="app.filterTopic('social')" class="px-3.5 py-1.5 rounded-full bg-stone-100 text-stone-700 transition whitespace-nowrap topic-chip min-h-[34px]" id="chip-social">🤝 Conhecer Pessoas</button>
+      <!-- Filtros Rápidos Compactos -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 text-[11px] font-bold">
+        <button onclick="app.filterTopic('all')" class="px-2.5 py-1 rounded-full bg-emerald-800 text-white transition whitespace-nowrap topic-chip" id="chip-all">Todos</button>
+        <button onclick="app.filterTopic('cafe')" class="px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 transition whitespace-nowrap topic-chip" id="chip-cafe">☕ Café</button>
+        <button onclick="app.filterTopic('direcoes')" class="px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 transition whitespace-nowrap topic-chip" id="chip-direcoes">🗺️ Rua & Direção</button>
+        <button onclick="app.filterTopic('social')" class="px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 transition whitespace-nowrap topic-chip" id="chip-social">🤝 Social</button>
       </div>
 
       <!-- Lista de Frases do Dia -->
-      <div id="chunksContainer" class="space-y-4">
+      <div id="chunksContainer" class="space-y-2.5">
         <!-- Injetado dinamicamente -->
       </div>
     </section>
 
     <!-- VIEW 2: TREINO SUAVE -->
-    <section id="view-practice" class="hidden space-y-4">
-      <div class="bg-white rounded-3xl p-4 sm:p-6 border border-stone-200/90 shadow-sm text-center max-w-xl mx-auto">
-        <div class="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 text-lg mb-2">
+    <section id="view-practice" class="hidden space-y-3">
+      <div class="bg-white rounded-2xl p-3.5 border border-stone-200 shadow-xs text-center">
+        <div class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 text-sm mb-1">
           <i class="fa-solid fa-puzzle-piece"></i>
         </div>
-        <h2 class="text-lg sm:text-xl font-black text-stone-900 mb-1">Treino sem Estresse</h2>
-        <p class="text-xs text-stone-500 mb-4">Monte a frase na ordem certa tocando nas palavras.</p>
+        <h2 class="text-sm font-black text-stone-900 mb-0.5">Treino sem Estresse</h2>
+        <p class="text-[11px] text-stone-500 mb-3">Toque nas palavras para montar a frase.</p>
 
         <!-- Frase com Botão de Escuta -->
-        <div class="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-3.5 mb-4 flex items-center justify-between gap-3 text-left">
-          <div class="flex-1">
-            <span class="text-[10px] font-extrabold text-emerald-800 uppercase tracking-wider block">Sentido / Tradução:</span>
-            <span id="practiceMeaning" class="text-base font-extrabold text-stone-900 block mt-0.5">...</span>
+        <div class="bg-emerald-50/80 border border-emerald-200 rounded-xl p-2.5 mb-3 flex items-center justify-between gap-2 text-left">
+          <div class="flex-1 min-w-0">
+            <span class="text-[9px] font-extrabold text-emerald-800 uppercase tracking-wider block">Sentido / Tradução:</span>
+            <span id="practiceMeaning" class="text-xs sm:text-sm font-extrabold text-stone-900 block truncate mt-0.5">...</span>
           </div>
-          <button onclick="app.playPracticeAudio(this)" class="w-11 h-11 rounded-2xl bg-emerald-700 active:bg-emerald-800 text-white flex items-center justify-center shrink-0 shadow-sm transition" title="Ouvir áudio">
-            <i class="fa-solid fa-volume-high text-base"></i>
+          <button onclick="app.playPracticeAudio(this)" class="w-8 h-8 rounded-lg bg-emerald-700 active:bg-emerald-800 text-white flex items-center justify-center shrink-0 shadow-xs transition" title="Ouvir áudio">
+            <i class="fa-solid fa-volume-high text-xs"></i>
           </button>
         </div>
 
-        <!-- Área da frase sendo montada -->
-        <div class="mb-4 text-left">
-          <span class="text-xs font-bold text-stone-500 block mb-1.5">Sua frase:</span>
-          <div id="selectedSlots" class="min-h-[52px] p-2.5 rounded-2xl bg-stone-50 border-2 border-dashed border-stone-200 flex flex-wrap gap-2 items-center">
-            <!-- Pílulas selecionadas -->
-          </div>
+        <!-- Área da frase montada -->
+        <div class="mb-3 text-left">
+          <span class="text-[10px] font-bold text-stone-400 block mb-1">Sua frase:</span>
+          <div id="selectedSlots" class="min-h-[42px] p-2 rounded-xl bg-stone-50 border-2 border-dashed border-stone-200 flex flex-wrap gap-1.5 items-center"></div>
         </div>
 
         <!-- Palavras para escolher -->
-        <div class="mb-5 text-left">
-          <span class="text-xs font-bold text-stone-500 block mb-1.5">Toque para adicionar:</span>
-          <div id="availableWords" class="flex flex-wrap gap-2 min-h-[48px]">
-            <!-- Palavras disponíveis -->
-          </div>
+        <div class="mb-3 text-left">
+          <span class="text-[10px] font-bold text-stone-400 block mb-1">Toque para adicionar:</span>
+          <div id="availableWords" class="flex flex-wrap gap-1.5 min-h-[38px]"></div>
         </div>
 
         <!-- Botões de ação -->
-        <div class="flex items-center gap-2">
-          <button onclick="app.resetPractice()" class="flex-1 py-3 rounded-2xl border border-stone-300 text-stone-700 font-bold active:bg-stone-100 transition text-xs flex items-center justify-center gap-1.5 min-h-[46px]">
-            <i class="fa-solid fa-arrow-rotate-left"></i> Limpar
+        <div class="flex items-center gap-1.5">
+          <button onclick="app.resetPractice()" class="flex-1 py-2 rounded-xl border border-stone-300 text-stone-700 font-bold active:bg-stone-100 transition text-[11px]">
+            Limpar
           </button>
-          <button onclick="app.verifyPractice()" class="flex-2 py-3 rounded-2xl bg-emerald-700 active:bg-emerald-800 text-white font-bold transition text-xs shadow-sm flex items-center justify-center gap-1.5 min-h-[46px] w-full">
-            <i class="fa-solid fa-check"></i> Verificar Conexão
+          <button onclick="app.verifyPractice()" class="flex-2 py-2 rounded-xl bg-emerald-700 active:bg-emerald-800 text-white font-bold transition text-[11px] shadow-xs w-full">
+            Verificar Conexão
           </button>
         </div>
 
-        <div id="practiceFeedback" class="mt-3 text-sm font-bold min-h-[26px]"></div>
+        <div id="practiceFeedback" class="mt-2 text-xs font-bold min-h-[22px]"></div>
       </div>
     </section>
 
     <!-- VIEW 3: TUTOR PACIENTE -->
-    <section id="view-tutor" class="hidden space-y-3">
-      <div class="bg-white rounded-3xl p-3.5 sm:p-5 shadow-xs border border-stone-200 flex flex-col h-[calc(100dvh-200px)] min-h-[420px]">
+    <section id="view-tutor" class="hidden space-y-2">
+      <div class="bg-white rounded-2xl p-3 shadow-xs border border-stone-200 flex flex-col h-[calc(100dvh-180px)] min-h-[360px]">
         
-        <div class="flex items-center justify-between pb-2.5 border-b border-stone-100">
-          <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-purple-700 text-white flex items-center justify-center text-base shrink-0">
+        <div class="flex items-center justify-between pb-2 border-b border-stone-100">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-purple-700 text-white flex items-center justify-center text-xs shrink-0">
               <i class="fa-solid fa-robot"></i>
             </div>
             <div>
-              <h3 class="font-extrabold text-stone-900 text-sm">Tutor Paciente</h3>
-              <p class="text-[11px] text-stone-500">Respostas curtas, com som e sem julgamentos</p>
+              <h3 class="font-extrabold text-stone-900 text-xs">Tutor Paciente</h3>
+              <p class="text-[10px] text-stone-500">Respostas curtas e com pronúncia</p>
             </div>
           </div>
-          <button onclick="app.clearChat()" class="text-xs text-stone-400 hover:text-stone-700 font-semibold p-1">
-            <i class="fa-solid fa-trash-can"></i>
+          <button onclick="app.clearChat()" class="text-xs text-stone-400 hover:text-stone-700 p-1">
+            <i class="fa-solid fa-trash-can text-xs"></i>
           </button>
         </div>
 
         <!-- Mensagens do Chat -->
-        <div id="chatMessages" class="flex-1 overflow-y-auto p-2 space-y-3 no-scrollbar">
-          <div class="flex items-start gap-2.5">
-            <div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-xs font-bold shrink-0">
+        <div id="chatMessages" class="flex-1 overflow-y-auto p-1.5 space-y-2">
+          <div class="flex items-start gap-2">
+            <div class="w-6 h-6 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-[10px] font-bold shrink-0">
               IA
             </div>
-            <div class="bg-purple-50 text-stone-800 p-3.5 rounded-2xl rounded-tl-none border border-purple-100 text-xs sm:text-sm leading-relaxed max-w-[90%]">
-              <p class="font-bold text-purple-950 mb-1">Olá! Pode me perguntar qualquer coisa.</p>
-              <p>Não se preocupe com erros de digitação ou acentuação, eu entendo perfeitamente!</p>
+            <div class="bg-purple-50 text-stone-800 p-2.5 rounded-xl rounded-tl-none border border-purple-100 text-[11px] leading-relaxed max-w-[90%]">
+              <p class="font-bold text-purple-950 mb-0.5">Olá! Pode me perguntar qualquer frase.</p>
+              <p>Não se preocupe com erros de digitação, eu entendo perfeitamente!</p>
             </div>
           </div>
         </div>
 
         <!-- Sugestões Rápidas -->
-        <div class="py-1.5 flex gap-1.5 overflow-x-auto no-scrollbar text-xs">
-          <button onclick="app.sendQuickPrompt('Como eu peço um café com leite de forma gentil?')" class="px-3 py-1.5 rounded-full bg-stone-100 active:bg-stone-200 text-stone-700 whitespace-nowrap font-medium transition text-[11px]">
-            ☕ Pedir café com leite
+        <div class="py-1 flex gap-1 overflow-x-auto text-[10px]">
+          <button onclick="app.sendQuickPrompt('Como eu peço um café com leite de forma gentil?')" class="px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 whitespace-nowrap font-medium">
+            ☕ Pedir café
           </button>
-          <button onclick="app.sendQuickPrompt('Como dizer que não entendi e pedir para falar devagar?')" class="px-3 py-1.5 rounded-full bg-stone-100 active:bg-stone-200 text-stone-700 whitespace-nowrap font-medium transition text-[11px]">
+          <button onclick="app.sendQuickPrompt('Como dizer que não entendi e pedir para falar devagar?')" class="px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 whitespace-nowrap font-medium">
             🐢 Falar devagar
           </button>
         </div>
 
         <!-- Campo de Digitação -->
-        <form onsubmit="app.handleSendMessage(event)" class="flex gap-1.5 pt-2 border-t border-stone-100 items-center">
+        <form onsubmit="app.handleSendMessage(event)" class="flex gap-1.5 pt-1.5 border-t border-stone-100 items-center">
           <input 
             type="text" 
             id="chatInput"
-            placeholder="Digite ou pergunte algo..."
-            class="flex-1 bg-stone-100 rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 font-medium text-stone-800 min-h-[44px]"
+            placeholder="Digite sua dúvida..."
+            class="flex-1 bg-stone-100 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-purple-600 font-medium text-stone-800"
             autocomplete="off"
           />
           <button 
             type="submit" 
             id="chatSubmitBtn"
-            class="px-4 py-2.5 rounded-2xl bg-purple-700 active:bg-purple-800 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5 shrink-0 min-h-[44px]">
-            <i class="fa-solid fa-paper-plane"></i>
+            class="w-9 h-9 rounded-xl bg-purple-700 active:bg-purple-800 text-white font-bold text-xs shadow-xs transition flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-paper-plane text-xs"></i>
           </button>
         </form>
 
@@ -349,13 +334,13 @@
     </section>
 
     <!-- VIEW 4: SALVOS -->
-    <section id="view-saved" class="hidden space-y-4">
-      <div class="pb-1">
-        <h2 class="text-lg font-black text-stone-900">Frases Favoritadas</h2>
-        <p class="text-xs text-stone-500">Ouça e revise no seu ritmo</p>
+    <section id="view-saved" class="hidden space-y-2.5">
+      <div class="pb-0.5">
+        <h2 class="text-sm font-black text-stone-900">Frases Favoritadas</h2>
+        <p class="text-[11px] text-stone-500">Ouça e revise no seu ritmo</p>
       </div>
 
-      <div id="savedListContainer" class="space-y-3">
+      <div id="savedListContainer" class="space-y-2">
         <!-- Renderizado dinamicamente -->
       </div>
     </section>
@@ -363,58 +348,58 @@
   </main>
 
   <!-- MODAL DE ACESSIBILIDADE -->
-  <div id="accessibilityModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-3.5">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-stone-200 max-h-[90vh] overflow-y-auto space-y-5 no-scrollbar">
+  <div id="accessibilityModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-xs w-full p-4 shadow-xl border border-stone-200 max-h-[85vh] overflow-y-auto space-y-4">
       
-      <div class="flex items-center justify-between pb-2 border-b border-stone-100">
-        <div class="flex items-center gap-2 text-emerald-900 font-extrabold text-base">
+      <div class="flex items-center justify-between pb-1.5 border-b border-stone-100">
+        <div class="flex items-center gap-1.5 text-emerald-900 font-extrabold text-sm">
           <i class="fa-solid fa-universal-access"></i>
           <h3>Conforto para Leitura</h3>
         </div>
-        <button onclick="app.toggleAccessibilityModal()" class="text-stone-400 hover:text-stone-700 text-lg font-bold w-8 h-8 rounded-full flex items-center justify-center">
+        <button onclick="app.toggleAccessibilityModal()" class="text-stone-400 hover:text-stone-700 text-base font-bold w-6 h-6 rounded-full flex items-center justify-center">
           ✕
         </button>
       </div>
 
       <!-- Tonalidade do Fundo -->
       <div>
-        <label class="block text-xs font-extrabold text-stone-800 mb-2">
-          Tom da Tela (Reduz fadiga nos olhos):
+        <label class="block text-[11px] font-extrabold text-stone-800 mb-1.5">
+          Tom da Tela (Reduz cansaço visual):
         </label>
-        <div class="grid grid-cols-5 gap-1.5 text-[11px] font-bold text-center">
-          <button onclick="app.setTheme('theme-cream')" class="p-2.5 rounded-xl bg-[#FAF6EE] border-2 border-amber-300 text-stone-800">Creme</button>
-          <button onclick="app.setTheme('theme-mint')" class="p-2.5 rounded-xl bg-[#EFF7F2] border-2 border-emerald-200 text-stone-800">Menta</button>
-          <button onclick="app.setTheme('theme-sky')" class="p-2.5 rounded-xl bg-[#F0F4F8] border-2 border-sky-200 text-stone-800">Céu</button>
-          <button onclick="app.setTheme('theme-peach')" class="p-2.5 rounded-xl bg-[#FFF5EE] border-2 border-orange-200 text-stone-800">Pêssego</button>
-          <button onclick="app.setTheme('theme-dark')" class="p-2.5 rounded-xl bg-[#181D24] border-2 border-stone-600 text-white">Noturno</button>
+        <div class="grid grid-cols-5 gap-1 text-[10px] font-bold text-center">
+          <button onclick="app.setTheme('theme-cream')" class="py-1.5 rounded-lg bg-[#FAF6EE] border-2 border-amber-300 text-stone-800">Creme</button>
+          <button onclick="app.setTheme('theme-mint')" class="py-1.5 rounded-lg bg-[#EFF7F2] border-2 border-emerald-200 text-stone-800">Menta</button>
+          <button onclick="app.setTheme('theme-sky')" class="py-1.5 rounded-lg bg-[#F0F4F8] border-2 border-sky-200 text-stone-800">Céu</button>
+          <button onclick="app.setTheme('theme-peach')" class="py-1.5 rounded-lg bg-[#FFF5EE] border-2 border-orange-200 text-stone-800">Pêssego</button>
+          <button onclick="app.setTheme('theme-dark')" class="py-1.5 rounded-lg bg-[#181D24] border-2 border-stone-600 text-white">Noturno</button>
         </div>
       </div>
 
       <!-- Fonte -->
       <div>
-        <label class="block text-xs font-extrabold text-stone-800 mb-2">Fonte:</label>
-        <div class="grid grid-cols-2 gap-2 text-xs font-bold">
-          <button onclick="app.setFontFamily('lexend')" id="fontBtn-lexend" class="p-2.5 rounded-xl border-2 border-emerald-700 bg-emerald-50 text-emerald-950 text-center">
-            Lexend (Fluidez)
+        <label class="block text-[11px] font-extrabold text-stone-800 mb-1.5">Fonte Adaptada:</label>
+        <div class="grid grid-cols-2 gap-1.5 text-[11px] font-bold">
+          <button onclick="app.setFontFamily('lexend')" id="fontBtn-lexend" class="py-1.5 px-2 rounded-lg border-2 border-emerald-700 bg-emerald-50 text-emerald-950 text-center">
+            Lexend
           </button>
-          <button onclick="app.setFontFamily('dyslexic')" id="fontBtn-dyslexic" class="p-2.5 rounded-xl border-2 border-stone-200 bg-stone-50 text-stone-700 text-center font-dyslexic">
+          <button onclick="app.setFontFamily('dyslexic')" id="fontBtn-dyslexic" class="py-1.5 px-2 rounded-lg border-2 border-stone-200 bg-stone-50 text-stone-700 text-center font-dyslexic">
             OpenDyslexic
           </button>
         </div>
       </div>
 
       <!-- Régua de Leitura -->
-      <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 flex items-center justify-between">
+      <div class="p-2.5 bg-amber-50 rounded-xl border border-amber-200 flex items-center justify-between">
         <div>
-          <h4 class="font-bold text-stone-900 text-xs flex items-center gap-1.5">
+          <h4 class="font-bold text-stone-900 text-[11px] flex items-center gap-1">
             <i class="fa-solid fa-ruler-horizontal text-amber-600"></i>
             Régua de Foco Visual
           </h4>
-          <p class="text-[10px] text-stone-600">Acompanha seu dedo na tela</p>
+          <p class="text-[9px] text-stone-600">Acompanha seu dedo na tela</p>
         </div>
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" id="rulerToggle" onchange="app.toggleReadingRuler(this.checked)" class="sr-only peer">
-          <div class="w-10 h-5 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-700"></div>
+          <div class="w-8 h-4 bg-stone-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-700"></div>
         </label>
       </div>
 
@@ -422,75 +407,102 @@
   </div>
 
   <!-- MODAL GERADOR DE TEMA COM IA -->
-  <div id="topicGeneratorModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-3.5">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-stone-200 space-y-3.5">
-      <div class="flex items-center justify-between pb-1.5 border-b border-stone-100">
-        <div class="flex items-center gap-2 text-purple-900 font-extrabold text-base">
+  <div id="topicGeneratorModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-xs w-full p-4 shadow-xl border border-stone-200 space-y-3">
+      <div class="flex items-center justify-between pb-1 border-b border-stone-100">
+        <div class="flex items-center gap-1.5 text-purple-900 font-extrabold text-sm">
           <i class="fa-solid fa-wand-magic-sparkles"></i>
           <h3>Criar Frases com IA</h3>
         </div>
-        <button onclick="app.closeTopicGeneratorModal()" class="text-stone-400 hover:text-stone-700 text-lg font-bold w-8 h-8 rounded-full flex items-center justify-center">
+        <button onclick="app.closeTopicGeneratorModal()" class="text-stone-400 hover:text-stone-700 text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center">
           ✕
         </button>
       </div>
 
-      <p class="text-xs text-stone-600">Sobre qual situação do seu dia a dia você gostaria de aprender agora?</p>
+      <p class="text-[11px] text-stone-600">Qual situação você gostaria de praticar agora?</p>
 
-      <div class="grid grid-cols-2 gap-1.5 text-xs font-semibold">
-        <button onclick="app.fillTopicPrompt('Aeroporto e Imigração')" class="p-2 rounded-xl bg-purple-50 text-purple-900 active:bg-purple-100 text-left">✈️ Aeroporto</button>
-        <button onclick="app.fillTopicPrompt('Comprar roupas e pedir tamanho')" class="p-2 rounded-xl bg-purple-50 text-purple-900 active:bg-purple-100 text-left">🛍️ Loja / Roupas</button>
-        <button onclick="app.fillTopicPrompt('Videogames e jogar online')" class="p-2 rounded-xl bg-purple-50 text-purple-900 active:bg-purple-100 text-left">🎮 Videogames</button>
-        <button onclick="app.fillTopicPrompt('Farmácia e remédios')" class="p-2 rounded-xl bg-purple-50 text-purple-900 active:bg-purple-100 text-left">💊 Farmácia</button>
+      <div class="grid grid-cols-2 gap-1.5 text-[10px] font-semibold">
+        <button onclick="app.fillTopicPrompt('Aeroporto e Imigração')" class="p-1.5 rounded-lg bg-purple-50 text-purple-900 active:bg-purple-100 text-left">✈️ Aeroporto</button>
+        <button onclick="app.fillTopicPrompt('Comprar roupas')" class="p-1.5 rounded-lg bg-purple-50 text-purple-900 active:bg-purple-100 text-left">🛍️ Compras</button>
+        <button onclick="app.fillTopicPrompt('Jogar videogames online')" class="p-1.5 rounded-lg bg-purple-50 text-purple-900 active:bg-purple-100 text-left">🎮 Jogos</button>
+        <button onclick="app.fillTopicPrompt('Farmácia e remédios')" class="p-1.5 rounded-lg bg-purple-50 text-purple-900 active:bg-purple-100 text-left">💊 Farmácia</button>
       </div>
 
       <input 
         type="text" 
         id="customTopicInput"
         placeholder="Ou digite o tema que quiser..."
-        class="w-full bg-stone-100 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-purple-600 font-medium text-stone-800"
+        class="w-full bg-stone-100 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-purple-600 font-medium text-stone-800"
       />
 
-      <div class="flex justify-end gap-2 pt-1">
-        <button onclick="app.closeTopicGeneratorModal()" class="px-3.5 py-2 rounded-xl text-stone-600 font-bold text-xs">Cancelar</button>
-        <button onclick="app.generateCustomTopicChunks()" id="generateTopicBtn" class="px-4 py-2 rounded-xl bg-purple-700 active:bg-purple-800 text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5">
+      <div class="flex justify-end gap-1.5 pt-0.5">
+        <button onclick="app.closeTopicGeneratorModal()" class="px-2.5 py-1.5 rounded-lg text-stone-600 font-bold text-xs">Cancelar</button>
+        <button onclick="app.generateCustomTopicChunks()" id="generateTopicBtn" class="px-3 py-1.5 rounded-lg bg-purple-700 active:bg-purple-800 text-white font-bold text-xs shadow-xs transition flex items-center gap-1">
           <span>Criar Frases</span>
-          <i class="fa-solid fa-sparkles"></i>
+          <i class="fa-solid fa-sparkles text-[10px]"></i>
         </button>
       </div>
     </div>
   </div>
 
   <!-- TOAST FEEDBACK NOTIFICATION -->
-  <div id="toast" class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none bg-stone-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-semibold justify-center">
+  <div id="toast" class="fixed bottom-3 left-3 right-3 sm:left-auto sm:right-3 z-50 transform translate-y-24 opacity-0 transition-all duration-250 pointer-events-none bg-stone-900 text-white px-3.5 py-2.5 rounded-xl shadow-xl flex items-center gap-2 text-xs font-semibold justify-center">
     <span id="toastIcon"><i class="fa-solid fa-circle-check text-emerald-400"></i></span>
     <span id="toastMessage">Sucesso</span>
   </div>
 
   <script>
     /**
-     * Motor de Áudio Universal para Mobile / Kodular WebView
-     * Usa a API pública do Google TTS com streaming direto HTML5 Audio.
-     * Funciona em qualquer Android, WebView, iOS ou computador sem falhas de síntese.
+     * Motor de Áudio Ultra-Resiliente para Kodular / Android WebView / iOS
+     * Utiliza voz Polly via StreamElements (CORS liberado e sem 403)
+     * com fallback para window.speechSynthesis e Kodular setWebViewString.
      */
     class UniversalAudioPlayer {
       constructor() {
         this.currentAudio = null;
-        this.synth = window.speechSynthesis || null;
+        this.voiceMap = {
+          'en': 'Joey',
+          'en-US': 'Joey',
+          'es': 'Conchita',
+          'es-ES': 'Conchita',
+          'fr': 'Celine',
+          'fr-FR': 'Celine',
+          'it': 'Carla',
+          'it-IT': 'Carla',
+          'de': 'Marlene',
+          'de-DE': 'Marlene',
+          'pt': 'Vitoria',
+          'pt-BR': 'Vitoria'
+        };
       }
 
       play(text, langCode = 'en-US', speed = 0.9, onStart = null, onEnd = null) {
-        // Interrompe áudio anterior se estiver tocando
         this.stop();
 
-        const langShort = langCode.split('-')[0] || 'en';
-        
-        // Formata URL de áudio com streaming MP3 direto
-        const encodedText = encodeURIComponent(text);
-        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${langShort}&q=${encodedText}`;
+        // Limpa pontuações que possam atrapalhar a fala
+        const cleanText = text.replace(/[*#]/g, '').trim();
+
+        // 1. Notifica ponte nativa do Kodular/AppInventor caso o usuário tenha blocos de TTS
+        if (window.AppInventor && typeof window.AppInventor.setWebViewString === 'function') {
+          try {
+            window.AppInventor.setWebViewString("TTS:" + cleanText);
+          } catch(e) {}
+        }
+        if (window.Kodular && typeof window.Kodular.setWebViewString === 'function') {
+          try {
+            window.Kodular.setWebViewString("TTS:" + cleanText);
+          } catch(e) {}
+        }
+
+        // 2. Determina a voz de alta qualidade
+        const shortLang = langCode.split('-')[0] || 'en';
+        const voiceName = this.voiceMap[langCode] || this.voiceMap[shortLang] || 'Joey';
+        const streamUrl = `https://api.streamelements.com/kappa/v2/speech?voice=${voiceName}&text=${encodeURIComponent(cleanText)}`;
 
         try {
           const audio = new Audio();
-          audio.src = ttsUrl;
+          audio.crossOrigin = "anonymous";
+          audio.src = streamUrl;
           audio.playbackRate = speed;
           this.currentAudio = audio;
 
@@ -506,36 +518,37 @@
           };
 
           audio.onerror = () => {
-            // Se o streaming falhar por rede, recorre ao SpeechSynthesis nativo se disponível
-            this.fallbackSpeechSynthesis(text, langCode, speed, onStart, onEnd);
+            // Se houver falha de rede na API de áudio, aciona o SpeechSynthesis
+            this.fallbackSpeechSynthesis(cleanText, langCode, speed, onStart, onEnd);
           };
 
           const playPromise = audio.play();
           if (playPromise !== undefined) {
             playPromise.catch(() => {
-              this.fallbackSpeechSynthesis(text, langCode, speed, onStart, onEnd);
+              this.fallbackSpeechSynthesis(cleanText, langCode, speed, onStart, onEnd);
             });
           }
-        } catch (e) {
-          this.fallbackSpeechSynthesis(text, langCode, speed, onStart, onEnd);
+        } catch (err) {
+          this.fallbackSpeechSynthesis(cleanText, langCode, speed, onStart, onEnd);
         }
       }
 
       fallbackSpeechSynthesis(text, langCode, speed, onStart, onEnd) {
-        if (!this.synth) {
+        if (!('speechSynthesis' in window)) {
           if (onEnd) onEnd();
           return;
         }
         try {
-          this.synth.cancel();
+          // No Android WebView, é essencial acordar a síntese com resume()
+          window.speechSynthesis.resume();
           const utterance = new SpeechSynthesisUtterance(text);
           utterance.lang = langCode;
           utterance.rate = speed;
           if (onStart) onStart();
           utterance.onend = () => { if (onEnd) onEnd(); };
           utterance.onerror = () => { if (onEnd) onEnd(); };
-          this.synth.speak(utterance);
-        } catch (err) {
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
           if (onEnd) onEnd();
         }
       }
@@ -548,8 +561,8 @@
           } catch (e) {}
           this.currentAudio = null;
         }
-        if (this.synth) {
-          try { this.synth.cancel(); } catch (e) {}
+        if ('speechSynthesis' in window) {
+          try { window.speechSynthesis.cancel(); } catch (e) {}
         }
       }
     }
@@ -562,7 +575,7 @@
           meaning: "Poderia repetir mais devagar?",
           phoneticPt: "Cud iu ri-pít dét slou-li?",
           syllables: ["Could you", "re-peat", "that", "slow-ly?"],
-          context: "Sua melhor amiga em viagens. Pessoas nativas adoram ajudar.",
+          context: "Sua melhor amiga em conversas reais. Pessoas nativas adoram ajudar.",
           langCode: 'en-US'
         },
         {
@@ -589,7 +602,7 @@
           meaning: "Onde fica o banheiro?",
           phoneticPt: "Uér iz dê rést-rum?",
           syllables: ["Where is", "the", "rest-room?"],
-          context: "Essencial para não passar aperto.",
+          context: "Essencial para viagens.",
           langCode: 'en-US'
         },
         {
@@ -609,7 +622,7 @@
           meaning: "Pode me servir um café?",
           phoneticPt: "Me puê-des po-nér un ca-fé?",
           syllables: ["¿Me pue-des", "po-ner", "un ca-fé?"],
-          context: "Forma natural dos espanhóis pedirem no balcão.",
+          context: "Forma natural de pedir em balcões.",
           langCode: 'es-ES'
         },
         {
@@ -618,16 +631,7 @@
           meaning: "Não foi nada, está tudo bem.",
           phoneticPt: "No pá-sa ná-da, tó-do bi-ên.",
           syllables: ["No pa-sa na-da", "to-do bien"],
-          context: "Expressão favorita para tranquilizar os outros.",
-          langCode: 'es-ES'
-        },
-        {
-          id: 'es-3',
-          phrase: "¿Dónde está la parada de metro?",
-          meaning: "Onde fica a estação de metrô?",
-          phoneticPt: "Dôn-de es-tá la pa-rá-da de mê-tro?",
-          syllables: ["¿Dón-de es-tá", "la pa-ra-da", "de me-tro?"],
-          context: "Para se locomover com confiança nas cidades.",
+          context: "Expressão favorita para tranquilizar.",
           langCode: 'es-ES'
         }
       ],
@@ -638,16 +642,7 @@
           meaning: "Um café, por favor.",
           phoneticPt: "An ca-fé, sil vu plé.",
           syllables: ["Un ca-fé", "s'il vous", "plaît"],
-          context: "Em francês, a gentileza abre todas as portas.",
-          langCode: 'fr-FR'
-        },
-        {
-          id: 'fr-2',
-          phrase: "C'est délicieux, merci!",
-          meaning: "Está delicioso, obrigado(a)!",
-          phoneticPt: "Sé dê-li-si-ô, mér-ci!",
-          syllables: ["C'est", "dé-li-cieux", "mer-ci!"],
-          context: "Elogie a comida com elegância.",
+          context: "Gentileza essencial em francês.",
           langCode: 'fr-FR'
         }
       ],
@@ -658,16 +653,7 @@
           meaning: "Um café espresso, por favor.",
           phoneticPt: "Un es-prés-so per fa-vô-re.",
           syllables: ["Un es-pres-so", "per fa-vo-re"],
-          context: "O clássico pedido nos cafés da Itália.",
-          langCode: 'it-IT'
-        },
-        {
-          id: 'it-2',
-          phrase: "Piacere di conoscerti!",
-          meaning: "Prazer em te conhecer!",
-          phoneticPt: "Pia-tchê-re di co-nó-xer-ti!",
-          syllables: ["Pia-ce-re", "di", "co-no-scer-ti!"],
-          context: "Para iniciar amizades calorosas.",
+          context: "O clássico pedido nos cafés italianos.",
           langCode: 'it-IT'
         }
       ],
@@ -679,15 +665,6 @@
           phoneticPt: "Ái-nen Cá-fe, bí-te.",
           syllables: ["Ei-nen", "Kaf-fee", "bit-te"],
           context: "Curto, direto e educado.",
-          langCode: 'de-DE'
-        },
-        {
-          id: 'de-2',
-          phrase: "Ich verstehe ein bisschen.",
-          meaning: "Eu entendo um pouquinho.",
-          phoneticPt: "Ixi fer-xte-e áin bís-xen.",
-          syllables: ["Ich ver-ste-he", "ein bis-schen"],
-          context: "Quebra o gelo de forma amigável.",
           langCode: 'de-DE'
         }
       ]
@@ -738,13 +715,6 @@
           const storedFont = localStorage.getItem('lingo_font');
           if (storedFont) this.setFontFamily(storedFont, false);
 
-          const storedApiKey = localStorage.getItem('lingo_api_key');
-          const apiKeyInput = document.getElementById('apiKeyInput');
-          if (apiKeyInput && storedApiKey) {
-            apiKeyInput.value = storedApiKey;
-          }
-          this.updateApiKeyStatus();
-
           const customChunks = localStorage.getItem('lingo_custom_chunks');
           if (customChunks) {
             const parsedCustom = JSON.parse(customChunks);
@@ -754,43 +724,11 @@
               }
             });
           }
-        } catch (e) {
-          console.debug('LocalStorage fallback ativo');
-        }
-      }
-
-      saveApiKey() {
-        const input = document.getElementById('apiKeyInput');
-        const val = input ? input.value.trim() : '';
-        if (val) {
-          localStorage.setItem('lingo_api_key', val);
-          this.showToast('Chave de API salva com sucesso!', 'success');
-        } else {
-          localStorage.removeItem('lingo_api_key');
-          this.showToast('Chave de API removida.', 'info');
-        }
-        this.updateApiKeyStatus();
-      }
-
-      updateApiKeyStatus() {
-        const stored = localStorage.getItem('lingo_api_key');
-        const statusEl = document.getElementById('apiKeyStatus');
-        if (statusEl) {
-          if (stored) {
-            statusEl.innerText = 'Ativa ✓';
-            statusEl.className = 'text-[10px] text-emerald-700 font-bold';
-          } else {
-            statusEl.innerText = 'Padrão / Não definida';
-            statusEl.className = 'text-[10px] text-stone-500 font-semibold';
-          }
-        }
+        } catch (e) {}
       }
 
       getApiKey() {
-        const userKey = localStorage.getItem('lingo_api_key');
-        return (userKey && userKey.trim().length > 0) 
-          ? userKey.trim() 
-          : "AQ.Ab8RN6KPD04y7eWGpVPW2IU0hpmzC6szqj5y7dGY_11f8SBhqg";
+        return "AQ.Ab8RN6KPD04y7eWGpVPW2IU0hpmzC6szqj5y7dGY_11f8SBhqg";
       }
 
       saveSettings() {
@@ -804,10 +742,7 @@
 
       getTodayDateString() {
         const d = new Date();
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       }
 
       checkDailyCalendar() {
@@ -866,7 +801,7 @@
             localStorage.setItem('lingo_streak', this.streak.toString());
           } catch (e) {}
           this.updateDailyStatusBadge();
-          this.showToast('Parabéns! Meta do dia alcançada! 🎉', 'success');
+          this.showToast('Parabéns! Meta do dia concluída! 🎉', 'success');
         }
       }
 
@@ -874,10 +809,10 @@
         const badge = document.getElementById('dailyStatusBadge');
         if (!badge) return;
         if (this.dailyDoneToday) {
-          badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-300";
+          badge.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-300";
           badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Concluído hoje!`;
         } else {
-          badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300";
+          badge.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300";
           badge.innerHTML = `<i class="fa-regular fa-clock text-amber-600 mr-1"></i> 2 min para hoje`;
         }
       }
@@ -888,9 +823,6 @@
         this.showToast('Novas frases carregadas!', 'info');
       }
 
-      /**
-       * Toca áudio universal com animação no botão
-       */
       playAudio(text, langCode = 'en-US', speed = 0.9, btnElement = null) {
         let originalContent = '';
         if (btnElement) {
@@ -942,7 +874,7 @@
         } else if (this.currentTopicFilter === 'direcoes') {
           chunks = chunks.filter(c => c.phrase.toLowerCase().includes('where') || c.phrase.toLowerCase().includes('dónde') || c.meaning.toLowerCase().includes('onde'));
         } else if (this.currentTopicFilter === 'social') {
-          chunks = chunks.filter(c => c.phrase.toLowerCase().includes('slowly') || c.phrase.toLowerCase().includes('meet') || c.phrase.toLowerCase().includes('piacere') || c.meaning.toLowerCase().includes('conhecer'));
+          chunks = chunks.filter(c => c.phrase.toLowerCase().includes('slowly') || c.phrase.toLowerCase().includes('meet') || c.phrase.toLowerCase().includes('conhecer'));
         } else {
           if (chunks.length > 2) {
             const offset = this.daySeed % chunks.length;
@@ -954,9 +886,9 @@
 
         if (chunks.length === 0) {
           container.innerHTML = `
-            <div class="text-center py-8 bg-white rounded-3xl border border-stone-200">
-              <p class="text-stone-600 font-bold text-sm">Nenhuma frase para este filtro.</p>
-              <button onclick="app.filterTopic('all')" class="mt-2 px-3 py-1.5 rounded-xl bg-emerald-700 text-white text-xs font-bold">Ver todas</button>
+            <div class="text-center py-6 bg-white rounded-2xl border border-stone-200">
+              <p class="text-stone-600 font-bold text-xs">Nenhuma frase para este filtro.</p>
+              <button onclick="app.filterTopic('all')" class="mt-2 px-2.5 py-1 rounded-lg bg-emerald-700 text-white text-[11px] font-bold">Ver todas</button>
             </div>
           `;
           return;
@@ -965,7 +897,7 @@
         chunks.forEach((chunk, index) => {
           const isSaved = this.savedChunks.some(s => s.id === chunk.id);
           const card = document.createElement('div');
-          card.className = "chunk-card bg-white p-4 sm:p-5 rounded-3xl border border-stone-200/90 relative flex flex-col justify-between";
+          card.className = "chunk-card bg-white p-3 sm:p-3.5 rounded-2xl border border-stone-200/90 relative flex flex-col justify-between";
 
           const syllablesHtml = chunk.syllables.map(syl => 
             `<span class="syllable-badge">${syl}</span>`
@@ -975,58 +907,58 @@
 
           card.innerHTML = `
             <div>
-              <div class="flex items-center justify-between gap-1 mb-2.5">
-                <span class="text-[10px] sm:text-xs font-bold text-emerald-800 bg-emerald-100/70 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              <div class="flex items-center justify-between gap-1 mb-1.5">
+                <span class="text-[9px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full uppercase tracking-wider">
                   ${index === 0 ? '⭐ Foco de Hoje' : 'Bloco de Sentido'}
                 </span>
                 
                 <!-- Botões de Ação do Card -->
-                <div class="flex items-center gap-1.5">
-                  <button onclick="app.toggleSaveChunk('${chunk.id}')" class="w-8 h-8 rounded-xl text-stone-400 active:text-amber-500 active:bg-stone-100 flex items-center justify-center transition" title="Salvar frase">
-                    <i class="fa-${isSaved ? 'solid text-amber-500' : 'regular'} fa-bookmark text-sm"></i>
+                <div class="flex items-center gap-1">
+                  <button onclick="app.toggleSaveChunk('${chunk.id}')" class="w-7 h-7 rounded-lg text-stone-400 active:text-amber-500 active:bg-stone-100 flex items-center justify-center transition" title="Salvar frase">
+                    <i class="fa-${isSaved ? 'solid text-amber-500' : 'regular'} fa-bookmark text-xs"></i>
                   </button>
-                  <button onclick="app.playAudio('${escapedPhrase}', '${chunk.langCode}', 0.65, this)" class="px-2 h-8 rounded-xl bg-amber-100 active:bg-amber-200 text-amber-900 flex items-center gap-1 text-[11px] font-bold transition shadow-xs" title="Ouvir bem devagar">
+                  <button onclick="app.playAudio('${escapedPhrase}', '${chunk.langCode}', 0.65, this)" class="px-1.5 h-7 rounded-lg bg-amber-100 active:bg-amber-200 text-amber-900 flex items-center gap-1 text-[10px] font-bold transition shadow-xs" title="Ouvir devagar">
                     🐢 <span>0.65x</span>
                   </button>
-                  <button onclick="app.playAudio('${escapedPhrase}', '${chunk.langCode}', 0.95, this)" class="w-8 h-8 rounded-xl bg-emerald-100 active:bg-emerald-200 text-emerald-900 flex items-center justify-center transition shadow-xs" title="Ouvir som normal">
+                  <button onclick="app.playAudio('${escapedPhrase}', '${chunk.langCode}', 0.95, this)" class="w-7 h-7 rounded-lg bg-emerald-100 active:bg-emerald-200 text-emerald-900 flex items-center justify-center transition shadow-xs" title="Ouvir som">
                     <i class="fa-solid fa-volume-high text-xs"></i>
                   </button>
                 </div>
               </div>
 
               <!-- Frase Principal -->
-              <h3 class="text-lg sm:text-xl font-black text-stone-900 mb-1.5 leading-snug">
+              <h3 class="text-sm sm:text-base font-black text-stone-900 mb-1 leading-snug">
                 ${chunk.phrase}
               </h3>
 
               <!-- Tradução em Português -->
-              <p class="text-sm font-semibold text-stone-700 mb-3">
+              <p class="text-xs font-semibold text-stone-700 mb-2">
                 ${chunk.meaning}
               </p>
 
               <!-- Guia Fonético em Português -->
-              <div class="p-2.5 bg-amber-50/80 border border-amber-200/90 rounded-2xl mb-3">
-                <div class="flex items-center gap-1.5 text-[11px] font-bold text-amber-900 mb-0.5">
-                  <i class="fa-solid fa-microphone-lines"></i>
+              <div class="p-2 bg-amber-50/90 border border-amber-200 rounded-xl mb-2">
+                <div class="flex items-center gap-1 text-[10px] font-bold text-amber-900 mb-0.5">
+                  <i class="fa-solid fa-microphone-lines text-[10px]"></i>
                   <span>Como se diz (som aproximado em português):</span>
                 </div>
-                <p class="text-xs sm:text-sm font-black text-amber-950 tracking-wide font-sans">
+                <p class="text-xs font-black text-amber-950 tracking-wide font-sans">
                   "${chunk.phoneticPt}"
                 </p>
               </div>
 
               <!-- Sílabas / Blocos Visuais -->
-              <div class="mb-3">
-                <span class="text-[11px] font-bold text-stone-400 block mb-1">Blocos visuais de leitura:</span>
-                <div class="flex flex-wrap gap-1">
+              <div class="mb-2">
+                <span class="text-[10px] font-bold text-stone-400 block mb-0.5">Blocos visuais de leitura:</span>
+                <div class="flex flex-wrap gap-0.5">
                   ${syllablesHtml}
                 </div>
               </div>
             </div>
 
             <!-- Contexto -->
-            <div class="pt-2 border-t border-stone-100 text-[11px] text-stone-500 flex items-center gap-1.5">
-              <i class="fa-solid fa-compass text-emerald-600"></i>
+            <div class="pt-1.5 border-t border-stone-100 text-[10px] text-stone-500 flex items-center gap-1">
+              <i class="fa-solid fa-compass text-emerald-600 text-[10px]"></i>
               <span>${chunk.context}</span>
             </div>
           `;
@@ -1071,7 +1003,7 @@
 
         words.forEach((word) => {
           const btn = document.createElement('button');
-          btn.className = "px-3.5 py-2 min-h-[42px] bg-stone-100 active:bg-stone-200 active:scale-95 text-stone-900 font-bold rounded-xl border border-stone-300 shadow-xs transition text-xs sm:text-sm";
+          btn.className = "px-2.5 py-1.5 bg-stone-100 active:bg-stone-200 active:scale-95 text-stone-900 font-bold rounded-lg border border-stone-300 shadow-xs transition text-xs";
           btn.innerText = word;
           btn.onclick = () => {
             this.selectedPracticeWords.push(word);
@@ -1087,15 +1019,15 @@
         if (!container) return;
 
         if (this.selectedPracticeWords.length === 0) {
-          container.innerHTML = `<span class="text-stone-400 text-xs font-medium">Toque nos blocos abaixo para organizar...</span>`;
+          container.innerHTML = `<span class="text-stone-400 text-[11px] font-medium">Toque nos blocos abaixo...</span>`;
           return;
         }
 
         container.innerHTML = '';
         this.selectedPracticeWords.forEach((w, idx) => {
           const pill = document.createElement('span');
-          pill.className = "px-3 py-1.5 bg-emerald-800 text-white rounded-xl font-bold text-xs shadow-xs flex items-center gap-1.5 cursor-pointer active:bg-emerald-950 transition";
-          pill.innerHTML = `${w} <i class="fa-solid fa-xmark text-[10px] opacity-70"></i>`;
+          pill.className = "px-2 py-1 bg-emerald-800 text-white rounded-lg font-bold text-xs shadow-xs flex items-center gap-1 cursor-pointer active:bg-emerald-950 transition";
+          pill.innerHTML = `${w} <i class="fa-solid fa-xmark text-[9px] opacity-70"></i>`;
           pill.onclick = () => {
             const removed = this.selectedPracticeWords.splice(idx, 1)[0];
             const buttons = document.querySelectorAll('#availableWords button');
@@ -1128,8 +1060,8 @@
 
         if (userClean === targetClean) {
           feedbackEl.innerHTML = `
-            <span class="text-emerald-800 bg-emerald-100 px-3 py-1.5 rounded-xl inline-flex items-center gap-1.5 text-xs">
-              <i class="fa-solid fa-circle-check text-base text-emerald-600"></i> Perfeito! Você associou som e sentido!
+            <span class="text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-lg inline-flex items-center gap-1 text-[11px]">
+              <i class="fa-solid fa-circle-check text-xs text-emerald-600"></i> Perfeito! Som e sentido conectados!
             </span>
           `;
           this.playAudio(this.currentPracticeItem.phrase, this.currentPracticeItem.langCode, 0.9);
@@ -1138,11 +1070,11 @@
           setTimeout(() => {
             this.currentPracticeIndex++;
             this.setupPractice();
-          }, 2000);
+          }, 1800);
         } else {
           feedbackEl.innerHTML = `
-            <span class="text-amber-900 bg-amber-100 px-3 py-1.5 rounded-xl inline-flex items-center gap-1.5 text-xs">
-              <i class="fa-solid fa-ear-listen text-base text-amber-600"></i> Quase lá! Toque no alto-falante verde acima para ouvir a ordem.
+            <span class="text-amber-900 bg-amber-100 px-2.5 py-1 rounded-lg inline-flex items-center gap-1 text-[11px]">
+              <i class="fa-solid fa-ear-listen text-xs text-amber-600"></i> Quase lá! Toque no alto-falante para ouvir a ordem.
             </span>
           `;
         }
@@ -1159,7 +1091,7 @@
 
         const submitBtn = document.getElementById('chatSubmitBtn');
         submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i>`;
 
         const typingId = this.appendTypingIndicator();
 
@@ -1204,10 +1136,10 @@ Regras estritas:
           }
         } catch (err) {
           this.removeTypingIndicator(typingId);
-          this.appendChatMessage('model', "Sem sinal no momento. Que tal rever as frases da aba 'Dose de Hoje'?");
+          this.appendChatMessage('model', "Sem conexão no momento. Que tal rever as frases de hoje?");
         } finally {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i>`;
+          submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i>`;
         }
       }
 
@@ -1221,29 +1153,29 @@ Regras estritas:
         const bubble = document.createElement('div');
         
         if (sender === 'user') {
-          bubble.className = "flex items-end justify-end gap-1.5";
+          bubble.className = "flex items-end justify-end gap-1";
           bubble.innerHTML = `
-            <div class="bg-emerald-800 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] text-xs sm:text-sm leading-relaxed font-medium">
+            <div class="bg-emerald-800 text-white p-2.5 rounded-xl rounded-tr-none max-w-[85%] text-xs leading-relaxed font-medium">
               ${this.escapeHtml(text)}
             </div>
           `;
         } else {
-          bubble.className = "flex items-start gap-2";
+          bubble.className = "flex items-start gap-1.5";
           let clean = this.escapeHtml(text);
           clean = clean.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-stone-950">$1</strong>');
-          clean = clean.replace(/\n\n/g, '<div class="h-2"></div>');
+          clean = clean.replace(/\n\n/g, '<div class="h-1.5"></div>');
           clean = clean.replace(/\n/g, '<br/>');
 
           const plainTextToRead = text.replace(/[*#]/g, '').trim().replace(/'/g, "\\'");
 
           bubble.innerHTML = `
-            <div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-xs font-bold shrink-0">
+            <div class="w-6 h-6 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-[10px] font-bold shrink-0">
               IA
             </div>
-            <div class="bg-purple-50/90 text-stone-900 p-3 rounded-2xl rounded-tl-none border border-purple-100 max-w-[90%] text-xs sm:text-sm leading-relaxed">
+            <div class="bg-purple-50/90 text-stone-900 p-2.5 rounded-xl rounded-tl-none border border-purple-100 max-w-[90%] text-xs leading-relaxed">
               ${clean}
-              <button onclick="app.playAudio('${plainTextToRead}', 'pt-BR', 0.95, this)" class="mt-2 text-[11px] bg-white text-purple-800 font-bold px-2.5 py-1 rounded-xl border border-purple-200 active:bg-purple-100 flex items-center gap-1.5 transition">
-                <i class="fa-solid fa-volume-high text-[10px]"></i> Ouvir resposta
+              <button onclick="app.playAudio('${plainTextToRead}', 'pt-BR', 0.95, this)" class="mt-1.5 text-[10px] bg-white text-purple-800 font-bold px-2 py-0.5 rounded-lg border border-purple-200 active:bg-purple-100 flex items-center gap-1 transition">
+                <i class="fa-solid fa-volume-high text-[9px]"></i> Ouvir
               </button>
             </div>
           `;
@@ -1258,11 +1190,11 @@ Regras estritas:
         const chatContainer = document.getElementById('chatMessages');
         const bubble = document.createElement('div');
         bubble.id = id;
-        bubble.className = "flex items-center gap-2";
+        bubble.className = "flex items-center gap-1.5";
         bubble.innerHTML = `
-          <div class="w-7 h-7 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-xs font-bold">IA</div>
-          <div class="bg-stone-100 text-stone-500 px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5">
-            <i class="fa-solid fa-circle-notch fa-spin text-purple-600"></i> Pensando com calma...
+          <div class="w-6 h-6 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-[10px] font-bold">IA</div>
+          <div class="bg-stone-100 text-stone-500 px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1">
+            <i class="fa-solid fa-circle-notch fa-spin text-purple-600 text-xs"></i> Pensando...
           </div>
         `;
         chatContainer.appendChild(bubble);
@@ -1307,10 +1239,10 @@ Regras estritas:
 
         if (this.savedChunks.length === 0) {
           container.innerHTML = `
-            <div class="text-center py-8 bg-white rounded-3xl border border-stone-200">
-              <i class="fa-regular fa-bookmark text-3xl text-stone-300 mb-2 block"></i>
-              <p class="text-stone-600 font-bold text-sm">Nenhuma frase salva ainda.</p>
-              <p class="text-stone-400 text-xs mt-0.5">Toque no ícone de marcador nas frases de hoje para guardar.</p>
+            <div class="text-center py-6 bg-white rounded-2xl border border-stone-200">
+              <i class="fa-regular fa-bookmark text-2xl text-stone-300 mb-1.5 block"></i>
+              <p class="text-stone-600 font-bold text-xs">Nenhuma frase salva ainda.</p>
+              <p class="text-stone-400 text-[11px] mt-0.5">Toque no marcador nas frases de hoje para guardar.</p>
             </div>
           `;
           return;
@@ -1319,22 +1251,22 @@ Regras estritas:
         container.innerHTML = '';
         this.savedChunks.forEach(chunk => {
           const card = document.createElement('div');
-          card.className = "bg-white p-4 rounded-3xl border border-stone-200 flex flex-col justify-between shadow-xs";
+          card.className = "bg-white p-3 rounded-2xl border border-stone-200 flex flex-col justify-between shadow-xs";
           const escaped = chunk.phrase.replace(/'/g, "\\'");
           card.innerHTML = `
             <div>
-              <div class="flex justify-between items-start mb-1.5">
-                <h4 class="text-base font-black text-stone-900">${chunk.phrase}</h4>
-                <button onclick="app.playAudio('${escaped}', '${chunk.langCode}', 0.9, this)" class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+              <div class="flex justify-between items-start mb-1">
+                <h4 class="text-sm font-black text-stone-900">${chunk.phrase}</h4>
+                <button onclick="app.playAudio('${escaped}', '${chunk.langCode}', 0.9, this)" class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
                   <i class="fa-solid fa-volume-high text-xs"></i>
                 </button>
               </div>
-              <p class="text-xs font-semibold text-stone-600 mb-2">${chunk.meaning}</p>
-              <div class="text-[11px] bg-amber-50 p-2 rounded-xl border border-amber-200 text-amber-950 font-bold mb-2">
+              <p class="text-xs font-semibold text-stone-600 mb-1.5">${chunk.meaning}</p>
+              <div class="text-[10px] bg-amber-50 p-1.5 rounded-lg border border-amber-200 text-amber-950 font-bold mb-1.5">
                 "${chunk.phoneticPt}"
               </div>
             </div>
-            <div class="flex justify-between items-center pt-2 border-t border-stone-100 text-[11px]">
+            <div class="flex justify-between items-center pt-1.5 border-t border-stone-100 text-[10px]">
               <span class="text-stone-400">${chunk.context}</span>
               <button onclick="app.toggleSaveChunk('${chunk.id}')" class="text-rose-600 font-bold">
                 Remover
@@ -1427,11 +1359,11 @@ Regras estritas:
       initReadingRuler() {
         const ruler = document.getElementById('readingRuler');
         window.addEventListener('mousemove', (e) => {
-          if (this.rulerActive) ruler.style.top = `${e.clientY - 24}px`;
+          if (this.rulerActive) ruler.style.top = `${e.clientY - 20}px`;
         });
         window.addEventListener('touchmove', (e) => {
           if (this.rulerActive && e.touches[0]) {
-            ruler.style.top = `${e.touches[0].clientY - 24}px`;
+            ruler.style.top = `${e.touches[0].clientY - 20}px`;
           }
         }, { passive: true });
       }
@@ -1465,7 +1397,7 @@ Regras estritas:
         const btn = document.getElementById('generateTopicBtn');
 
         btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Criando...`;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i>`;
 
         try {
           const langNames = { en: 'Inglês', es: 'Espanhol', fr: 'Francês', it: 'Italiano', de: 'Alemão' };
@@ -1514,10 +1446,10 @@ Responda APENAS em JSON válido no formato:
             this.showToast(`3 novas frases criadas!`, 'success');
           }
         } catch (e) {
-          this.showToast('Erro ao criar frases. Tente novamente!', 'error');
+          this.showToast('Erro ao criar frases.', 'error');
         } finally {
           btn.disabled = false;
-          btn.innerHTML = `<span>Criar Frases</span> <i class="fa-solid fa-sparkles"></i>`;
+          btn.innerHTML = `<span>Criar Frases</span> <i class="fa-solid fa-sparkles text-[10px]"></i>`;
         }
       }
 
@@ -1541,7 +1473,7 @@ Responda APENAS em JSON válido no formato:
         setTimeout(() => {
           toast.classList.remove('translate-y-0', 'opacity-100');
           toast.classList.add('translate-y-24', 'opacity-0');
-        }, 2400);
+        }, 2200);
       }
 
       escapeHtml(str) {
