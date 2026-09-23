@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1088,7 +1089,7 @@ Responda APENAS em formato JSON válido contendo um array de 3 objetos com a est
   }
 ]`;
 
-          const apiKey = "AQ.Ab8RN6KPD04y7eWGpVPW2IU0hpmzC6szqj5y7dGY_11f8SBhqg";
+          const apiKey = "";
           const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
           const payload = {
@@ -1174,7 +1175,7 @@ Responda APENAS em formato JSON válido contendo um array de 3 objetos com a est
         chunks.forEach((chunk, index) => {
           const isSaved = this.savedChunks.some(s => s.id === chunk.id);
           const card = document.createElement('div');
-          card.className = "chunk-card bg-white p-5 sm:p-6 rounded-3xl border border-stone-200/90 relative flex flex-col justify-between";
+          card.className = "chunk-card bg-white p-4 sm:p-6 rounded-3xl border border-stone-200/90 relative flex flex-col justify-between";
 
           const syllablesHtml = chunk.syllables.map(syl => 
             `<span class="syllable-badge">${syl}</span>`
@@ -1184,27 +1185,27 @@ Responda APENAS em formato JSON válido contendo um array de 3 objetos com a est
 
           card.innerHTML = `
             <div>
-              <div class="flex items-start justify-between gap-3 mb-3">
-                <span class="text-xs font-bold text-emerald-800 bg-emerald-100/70 px-2.5 py-1 rounded-full uppercase tracking-wider">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <span class="text-[11px] sm:text-xs font-bold text-emerald-800 bg-emerald-100/70 px-2.5 py-1 rounded-full uppercase tracking-wider">
                   ${index === 0 ? '⭐ Foco de Hoje' : 'Bloco de Sentido'}
                 </span>
-                <div class="flex items-center gap-1.5">
-                  <button onclick="app.toggleSaveChunk('${chunk.id}')" class="p-2 rounded-xl text-stone-400 hover:text-amber-500 hover:bg-stone-100 transition" title="Salvar para revisar">
+                <div class="flex items-center gap-1.5 ml-auto">
+                  <button onclick="app.toggleSaveChunk('${chunk.id}')" class="w-9 h-9 rounded-xl text-stone-400 hover:text-amber-500 hover:bg-stone-100 transition flex items-center justify-center" title="Salvar para revisar">
                     <i class="fa-${isSaved ? 'solid text-amber-500' : 'regular'} fa-bookmark text-base"></i>
                   </button>
                   <!-- Botão Ouvir Lento (Tartaruga) -->
-                  <button onclick="app.speak('${escapedPhrase}', '${chunk.langCode}', 0.65)" class="px-2.5 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 flex items-center gap-1 text-xs font-bold transition shadow-sm" title="Ouvir bem devagar (fonema por fonema)">
+                  <button onclick="app.speak('${escapedPhrase}', '${chunk.langCode}', 0.65)" class="px-2.5 py-1.5 h-9 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 flex items-center gap-1 text-xs font-bold transition shadow-xs active:scale-95" title="Ouvir bem devagar">
                     🐢 <span>0.65x</span>
                   </button>
                   <!-- Botão Ouvir Normal -->
-                  <button onclick="app.speak('${escapedPhrase}', '${chunk.langCode}', 0.95)" class="w-10 h-10 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 flex items-center justify-center transition shadow-sm" title="Ouvir em velocidade natural">
+                  <button onclick="app.speak('${escapedPhrase}', '${chunk.langCode}', 0.95)" class="w-9 h-9 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 flex items-center justify-center transition shadow-xs active:scale-95" title="Ouvir em velocidade natural">
                     <i class="fa-solid fa-volume-high"></i>
                   </button>
                 </div>
               </div>
 
               <!-- Frase Principal -->
-              <h3 class="text-xl sm:text-2xl font-black text-stone-900 mb-2 leading-tight">
+              <h3 class="text-lg sm:text-2xl font-black text-stone-900 mb-2 leading-snug">
                 ${chunk.phrase}
               </h3>
 
