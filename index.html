@@ -738,6 +738,13 @@
           const storedFont = localStorage.getItem('lingo_font');
           if (storedFont) this.setFontFamily(storedFont, false);
 
+          const storedApiKey = localStorage.getItem('lingo_api_key');
+          const apiKeyInput = document.getElementById('apiKeyInput');
+          if (apiKeyInput && storedApiKey) {
+            apiKeyInput.value = storedApiKey;
+          }
+          this.updateApiKeyStatus();
+
           const customChunks = localStorage.getItem('lingo_custom_chunks');
           if (customChunks) {
             const parsedCustom = JSON.parse(customChunks);
@@ -750,6 +757,40 @@
         } catch (e) {
           console.debug('LocalStorage fallback ativo');
         }
+      }
+
+      saveApiKey() {
+        const input = document.getElementById('apiKeyInput');
+        const val = input ? input.value.trim() : '';
+        if (val) {
+          localStorage.setItem('lingo_api_key', val);
+          this.showToast('Chave de API salva com sucesso!', 'success');
+        } else {
+          localStorage.removeItem('lingo_api_key');
+          this.showToast('Chave de API removida.', 'info');
+        }
+        this.updateApiKeyStatus();
+      }
+
+      updateApiKeyStatus() {
+        const stored = localStorage.getItem('lingo_api_key');
+        const statusEl = document.getElementById('apiKeyStatus');
+        if (statusEl) {
+          if (stored) {
+            statusEl.innerText = 'Ativa ✓';
+            statusEl.className = 'text-[10px] text-emerald-700 font-bold';
+          } else {
+            statusEl.innerText = 'Padrão / Não definida';
+            statusEl.className = 'text-[10px] text-stone-500 font-semibold';
+          }
+        }
+      }
+
+      getApiKey() {
+        const userKey = localStorage.getItem('lingo_api_key');
+        return (userKey && userKey.trim().length > 0) 
+          ? userKey.trim() 
+          : "AQ.Ab8RN6KPD04y7eWGpVPW2IU0hpmzC6szqj5y7dGY_11f8SBhqg";
       }
 
       saveSettings() {
@@ -1137,8 +1178,8 @@ Regras estritas:
    - O significado direto em português.
           `.trim();
 
-          const apiKey = "";
-          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview:generateContent?key=${apiKey}`;
+          const apiKey = this.getApiKey();
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
           const payload = {
             contents: [{ role: 'user', parts: [{ text: text }] }],
@@ -1442,8 +1483,8 @@ Responda APENAS em JSON válido no formato:
   }
 ]`;
 
-          const apiKey = "AQ.Ab8RN6KPD04y7eWGpVPW2IU0hpmzC6szqj5y7dGY_11f8SBhqg";
-          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview:generateContent?key=${apiKey}`;
+          const apiKey = this.getApiKey();
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
           const res = await fetch(apiUrl, {
             method: 'POST',
